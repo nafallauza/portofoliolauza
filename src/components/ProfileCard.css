@@ -1,0 +1,127 @@
+.profile-card-container {
+  perspective: 1000px;
+  width: 100%;
+  max-width: 350px;
+  aspect-ratio: 4 / 5.2;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 0 auto;
+  z-index: 10;
+}
+
+.profile-card {
+  width: 100%;
+  height: 100%;
+  background: rgba(15, 15, 15, 0.7);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 24px;
+  position: relative;
+  overflow: hidden;
+  transform-style: preserve-3d;
+  box-shadow: 0 30px 60px rgba(0, 0, 0, 0.5),
+              inset 0 1px 0 rgba(255, 255, 255, 0.05);
+  display: flex;
+  flex-direction: column;
+  cursor: pointer;
+}
+
+.profile-card.hovered {
+  border-color: rgba(255, 122, 48, 0.35);
+  box-shadow: 0 40px 80px rgba(0, 0, 0, 0.75),
+              0 0 35px rgba(255, 122, 48, 0.18),
+              inset 0 1px 0 rgba(255, 255, 255, 0.15);
+}
+
+/* Holographic Shine */
+.holo-shine {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 5;
+  mix-blend-mode: color-dodge;
+  transition: opacity 0.3s ease;
+}
+
+/* Holographic Sparkle Grid */
+.holo-sparkles {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 4;
+  background-image: 
+    radial-gradient(rgba(255, 255, 255, 0.18) 1px, transparent 1px),
+    radial-gradient(rgba(255, 255, 255, 0.1) 1.2px, transparent 1.2px);
+  background-size: 20px 20px, 32px 32px;
+  background-position: 0 0, 16px 16px;
+  mix-blend-mode: overlay;
+  transition: opacity 0.3s ease;
+}
+
+.profile-card-inner {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  padding: 16px;
+  box-sizing: border-box;
+  transform: translateZ(35px); /* Creates dramatic 3D floating effect */
+}
+
+.profile-card-image-container {
+  width: 100%;
+  flex-grow: 1;
+  border-radius: 16px;
+  overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, 0.04);
+  background: #080808;
+  position: relative;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
+}
+
+.profile-card-photo {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+  display: block;
+  filter: grayscale(100%) contrast(1.15) brightness(0.95); /* Monochrome */
+  transition: transform 0.5s cubic-bezier(0.25, 1, 0.5, 1);
+}
+
+.profile-card:hover .profile-card-photo {
+  transform: scale(1.04);
+}
+
+.profile-card-info {
+  padding: 16px 8px 2px;
+  text-align: center;
+  transform: translateZ(15px); /* Floats slightly lower than the photo */
+}
+
+.profile-card-name {
+  font-family: var(--font-header);
+  font-size: 22px;
+  font-weight: 700;
+  color: #ffffff;
+  margin: 0 0 4px;
+  letter-spacing: -0.5px;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+}
+
+.profile-card-role {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--primary);
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  margin: 0;
+  font-weight: 600;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
+}

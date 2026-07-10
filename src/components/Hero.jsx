@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import lauzaImg from '../assets/lauza.png';
+import lauzaImg from '../assets/lauza_2.png';
 import SideRays from './SideRays';
 
 const roles = ['Frontend Developer', 'UI/UX Designer', 'Video Editor'];

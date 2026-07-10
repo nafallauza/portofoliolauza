@@ -1,9 +1,11 @@
 import React, { useState } from 'react';
+import ciscoCert from '../assets/setifikat/ciscoo.jpeg';
+import magangCert from '../assets/setifikat/magang.jpeg';
 
 const projectsData = [
     {
         id: 1,
-        category: 'ui-ux',
+        category: 'project',
         categoryLabel: 'UI/UX Design',
         title: 'SaaS Analytics Platform',
         desc: 'High-fidelity dashboard interface tailored for AI-driven business intelligence. Focuses on data hierarchy, dense table grids, and dark interface elegance.',
@@ -14,7 +16,7 @@ const projectsData = [
     },
     {
         id: 2,
-        category: 'editing',
+        category: 'project',
         categoryLabel: 'Video Editing',
         title: 'Commercial Promo Reel',
         desc: 'Dynamic product teaser video integrating keyframe animation, swift kinetic typography transitions, and meticulous color grading for a premium brand showcase.',
@@ -25,18 +27,31 @@ const projectsData = [
     },
     {
         id: 3,
-        category: 'web-dev',
-        categoryLabel: 'Web Dev',
-        title: 'Personal Brand Hub',
-        desc: 'An ultra-fast static developer portfolio website, featuring customizable dark grids, smooth transitions, and high-scoring Lighthouse metrics.',
-        link: '#',
-        linkLabel: 'Explore Code',
+        category: 'certificate',
+        categoryLabel: 'Certification',
+        title: 'Cisco Networking Academy',
+        desc: 'Completed comprehensive networking curriculum and hands-on training via Cisco.',
+        link: ciscoCert,
+        linkLabel: 'View Certificate',
         bgClass: 'web-dev-bg',
-        mockType: 'code'
+        mockType: 'image',
+        imageSrc: ciscoCert
+    },
+    {
+        id: 7,
+        category: 'certificate',
+        categoryLabel: 'Experience',
+        title: 'Internship Certificate',
+        desc: 'Successfully completed professional internship program and contributed to real-world projects.',
+        link: magangCert,
+        linkLabel: 'View Certificate',
+        bgClass: 'ui-ux-bg',
+        mockType: 'image',
+        imageSrc: magangCert
     },
     {
         id: 4,
-        category: 'ui-ux',
+        category: 'project',
         categoryLabel: 'UI/UX Design',
         title: 'Fintech Mobile App',
         desc: 'A minimalist finance application design emphasizing swift money transfers, elegant balance cards, and a clutter-free transaction dashboard.',
@@ -44,15 +59,35 @@ const projectsData = [
         linkLabel: 'View Figma',
         bgClass: 'ui-ux-bg-2',
         mockType: 'mobile-ui'
+    },
+    {
+        id: 5,
+        category: 'project',
+        categoryLabel: 'Web Development',
+        title: 'E-Commerce Platform',
+        desc: 'A full-stack e-commerce solution with dynamic cart management, smooth page transitions, and an integrated payment gateway interface.',
+        link: '#',
+        linkLabel: 'Live Demo',
+        bgClass: 'web-dev-bg',
+        mockType: 'code'
+    },
+    {
+        id: 6,
+        category: 'project',
+        categoryLabel: 'UI/UX Design',
+        title: 'Healthcare Portal',
+        desc: 'Patient management dashboard designed for clinics, featuring a calming color palette and intuitive appointment scheduling flow.',
+        link: '#',
+        linkLabel: 'View Case Study',
+        bgClass: 'ui-ux-bg',
+        mockType: 'ui-ux'
     }
 ];
 
 export default function Projects() {
-    const [activeFilter, setActiveFilter] = useState('all');
+    const [activeFilter, setActiveFilter] = useState('project');
 
-    const filteredProjects = activeFilter === 'all' 
-        ? projectsData 
-        : projectsData.filter(p => p.category === activeFilter);
+    const filteredProjects = projectsData.filter(p => p.category === activeFilter);
 
     return (
         <section id="projects" className="projects-section">
@@ -64,36 +99,31 @@ export default function Projects() {
             {/* Category Filter Tabs */}
             <div className="project-filters reveal-fade revealed">
                 <button 
-                    className={`filter-btn ${activeFilter === 'all' ? 'active' : ''}`} 
-                    onClick={() => setActiveFilter('all')}
+                    className={`filter-btn ${activeFilter === 'project' ? 'active' : ''}`} 
+                    onClick={() => setActiveFilter('project')}
                 >
-                    All Projects
+                    Project
                 </button>
                 <button 
-                    className={`filter-btn ${activeFilter === 'ui-ux' ? 'active' : ''}`} 
-                    onClick={() => setActiveFilter('ui-ux')}
+                    className={`filter-btn ${activeFilter === 'certificate' ? 'active' : ''}`} 
+                    onClick={() => setActiveFilter('certificate')}
                 >
-                    UI/UX Design
-                </button>
-                <button 
-                    className={`filter-btn ${activeFilter === 'editing' ? 'active' : ''}`} 
-                    onClick={() => setActiveFilter('editing')}
-                >
-                    Video Editing
-                </button>
-                <button 
-                    className={`filter-btn ${activeFilter === 'web-dev' ? 'active' : ''}`} 
-                    onClick={() => setActiveFilter('web-dev')}
-                >
-                    Web Dev
+                    Certificate
                 </button>
             </div>
 
             {/* Projects Grid */}
-            <div className="projects-grid">
-                {filteredProjects.map(project => (
-                    <div key={project.id} className="project-card reveal-fade revealed">
-                        <div className="project-image-wrapper">
+            <div className={`projects-grid bento-layout-${filteredProjects.length}`}>
+                {filteredProjects.map((project, index) => (
+                    <div 
+                        key={project.id} 
+                        className={`project-card bento-item-${index} reveal-fade revealed`}
+                        style={project.category === 'certificate' ? { pointerEvents: 'none' } : {}}
+                    >
+                        <div 
+                            className="project-image-wrapper"
+                            style={project.category === 'certificate' ? { aspectRatio: '4/3', height: 'auto', borderBottom: 'none' } : {}}
+                        >
                             <div className={`project-image-placeholder ${project.bgClass}`}>
                                 
                                 {project.mockType === 'ui-ux' && (
@@ -136,16 +166,24 @@ export default function Projects() {
                                     </div>
                                 )}
 
+                                {project.mockType === 'image' && (
+                                    <div className="project-mock-image" style={{ width: '100%', height: '100%', borderRadius: 'inherit', overflow: 'hidden', display: 'block' }}>
+                                        <img src={project.imageSrc} alt={project.title} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                                    </div>
+                                )}
+
                             </div>
                         </div>
-                        <div className="project-info">
-                            <span className="project-tag-item">{project.categoryLabel}</span>
-                            <h3>{project.title}</h3>
-                            <p>{project.desc}</p>
-                            <a href={project.link} className="project-link">
-                                {project.linkLabel} <span>→</span>
-                            </a>
-                        </div>
+                        {project.category !== 'certificate' && (
+                            <div className="project-info">
+                                <span className="project-tag-item">{project.categoryLabel}</span>
+                                <h3>{project.title}</h3>
+                                <p>{project.desc}</p>
+                                <a href={project.link} target="_self" rel="noreferrer" className="project-link">
+                                    {project.linkLabel} <span>→</span>
+                                </a>
+                            </div>
+                        )}
                     </div>
                 ))}
             </div>

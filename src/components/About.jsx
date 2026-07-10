@@ -1,6 +1,9 @@
 import React from 'react';
 import LogoLoop from './LogoLoop';
-import lauzaImg from '../assets/lauza.png';
+import lauzaImg from '../assets/lauza_about.jpeg';
+import ProfileCard from './ProfileCard';
+import ciscoCert from '../assets/setifikat/ciscoo.jpeg';
+import magangCert from '../assets/setifikat/magang.jpeg';
 
 const ReactIcon = () => (
   <svg viewBox="0 0 100 100" fill="none" stroke="currentColor" strokeWidth="8" className="ticker-svg">
@@ -99,7 +102,6 @@ const techLogos = [
     { node: <TailwindIcon /> },
     { node: <PhotoshopIcon /> },
     { node: <JavaScriptIcon /> },
-
     { node: <VsCodeIcon /> },
     { node: <AntigravityIcon /> },
     { node: <ClaudeIcon /> },
@@ -107,7 +109,7 @@ const techLogos = [
 
 export default function About() {
     return (
-        <section id="about" className="about-section">
+        <section className="about-section">
             <div className="about-logo-ticker-wrapper">
                 <LogoLoop
                     logos={techLogos}
@@ -122,46 +124,65 @@ export default function About() {
                 />
             </div>
 
-            <div className="section-header" style={{ marginTop: '100px' }}>
-                <span className="section-tag">About Me</span>
-                <h2 className="section-title">A look into my workspace & skills</h2>
-            </div>
-
-            <div className="about-card reveal-fade revealed">
+            <div id="about" className="about-card reveal-fade revealed" style={{ marginTop: '40px', scrollMarginTop: '110px' }}>
                 {/* Left side: Bio & Workspace/Skills Table */}
                 <div className="about-bio-content">
-                    <h3>Who I Am</h3>
-                    <p>I am a creative professional based in Indonesia, bridging the gap between high-impact video production and interactive web development. With 3 years of hands-on experience, I build aesthetic digital products and engaging visual communication.</p>
-                    
                     <table className="about-table">
+                        <thead>
+                            <tr>
+                                <th colSpan="2" style={{ paddingBottom: '24px', textAlign: 'left' }}>
+                                    <span className="section-tag" style={{ margin: 0, display: 'inline-block', marginBottom: '12px' }}>About Me</span>
+                                    <h2 style={{ fontSize: '2.4rem', margin: 0, color: '#fff', fontFamily: 'var(--font-header)', letterSpacing: '-0.5px' }}>My Workspace & Skills</h2>
+                                </th>
+                            </tr>
+                        </thead>
                         <tbody>
                             <tr>
-                                <td className="table-label">Services</td>
-                                <td className="table-value">Video Editing, Motion Graphics, UI/UX Design, Web Development</td>
+                                <td className="table-label" style={{ verticalAlign: 'top', paddingTop: '16px' }}>Profile</td>
+                                <td className="table-value" style={{ lineHeight: '1.6', paddingTop: '16px' }}>
+                                    Informatics student specializing in UI/UX Design and Web Development. Passionate about crafting intuitive application interfaces and building responsive, functional digital experiences with high attention to detail.
+                                </td>
+                            </tr>
+                            <tr>
+                                <td className="table-label">Focus</td>
+                                <td className="table-value">UI/UX Design, Frontend Development, Video Editing, Graphic Design</td>
                             </tr>
                             <tr>
                                 <td className="table-label">Software</td>
-                                <td className="table-value">Adobe Premiere Pro, After Effects, Photoshop, Figma</td>
+                                <td className="table-value">Figma, Adobe Photoshop, Adobe Illustrator, Premiere Pro, OBS Studio</td>
                             </tr>
                             <tr>
                                 <td className="table-label">Tech Stack</td>
-                                <td className="table-value">React, Next.js, JavaScript, TypeScript, Tailwind CSS, WebGL</td>
+                                <td className="table-value">HTML, CSS, JavaScript, React</td>
                             </tr>
                             <tr>
-                                <td className="table-label">Experience</td>
-                                <td className="table-value">3+ Years of professional freelance & studio experience</td>
+                                <td className="table-label">Education</td>
+                                <td className="table-value">Informatics, Universitas Amikom Yogyakarta (GPA: 3.6)</td>
                             </tr>
                         </tbody>
                     </table>
                 </div>
 
                 {/* Right side: Photo Frame */}
-                <div className="about-photo-wrapper">
-                    <div className="about-photo-card">
-                        <img src={lauzaImg} alt="Lauza" className="about-photo" />
-                    </div>
+                <div className="about-photo-wrapper" style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+                    <ProfileCard
+                        name="Nafal Lauza"
+                        title="UI/UX & Web Dev"
+                        handle="nafallauza"
+                        status="Available for work"
+                        contactText="Hire Me"
+                        avatarUrl={lauzaImg}
+                        showUserInfo={false}
+                        enableTilt={true}
+                        enableMobileTilt={false}
+                        onContactClick={() => document.getElementById('contact')?.scrollIntoView({ behavior: 'smooth' })}
+                        behindGlowColor="rgba(255, 122, 48, 0.67)"
+                        innerGradient="linear-gradient(145deg, #1a1a1a 0%, rgba(255, 122, 48, 0.15) 100%)"
+                        behindGlowEnabled={true}
+                    />
                 </div>
             </div>
+
         </section>
     );
 }

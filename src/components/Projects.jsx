@@ -1,29 +1,48 @@
 import React, { useState } from 'react';
 import ciscoCert from '../assets/setifikat/ciscoo.jpeg';
 import magangCert from '../assets/setifikat/magang.jpeg';
+import dermacareImg from '../assets/projects/dermacare.png';
+import topupinImg from '../assets/projects/topupin.png';
+import nikkyposImg from '../assets/projects/nikkypos.png';
 
 const projectsData = [
     {
         id: 1,
         category: 'project',
-        categoryLabel: 'UI/UX Design',
-        title: 'SaaS Analytics Platform',
-        desc: 'High-fidelity dashboard interface tailored for AI-driven business intelligence. Focuses on data hierarchy, dense table grids, and dark interface elegance.',
-        link: '#',
-        linkLabel: 'View Prototype',
+        categoryLabel: 'AI & Web Dev',
+        title: 'DermaCare (AI Skin Analysis)',
+        desc: 'An AI-powered dermatology application built with Streamlit for skin condition analysis and care recommendations.',
+        fullDesc: [
+            "DermaCare adalah aplikasi web cerdas berbasis AI yang dikembangkan menggunakan Streamlit untuk membantu pengguna menganalisis kondisi kulit secara mudah dan cepat.",
+            "Cara kerjanya sangat sederhana: cukup ambil atau unggah foto kulit Anda, lalu sistem akan memproses gambar tersebut dan memberikan analisis awal mengenai masalah kulit yang mungkin ada (seperti jerawat, ruam, dll).",
+            "Aplikasi ini juga menyediakan rekomendasi perawatan yang disesuaikan dengan hasil deteksi, serta fitur konsultasi awal. Meskipun bukan alat diagnosis medis resmi, DermaCare berfungsi sebagai panduan praktis untuk perawatan kulit harian Anda."
+        ],
+        links: [
+            { label: 'Live App', url: 'https://dermacare-app-5eaae5bwvb39sfszlwar7q.streamlit.app/' },
+            { label: 'GitHub', url: 'https://github.com/nafallauza/dermacare-streamlit' },
+            { label: 'YouTube', url: 'https://youtu.be/7ViRwbl1_Ro?si=QVfjckbuJdv2t3xP' }
+        ],
         bgClass: 'ui-ux-bg',
-        mockType: 'ui-ux'
+        mockType: 'image',
+        imageSrc: dermacareImg
     },
     {
         id: 2,
         category: 'project',
-        categoryLabel: 'Video Editing',
-        title: 'Commercial Promo Reel',
-        desc: 'Dynamic product teaser video integrating keyframe animation, swift kinetic typography transitions, and meticulous color grading for a premium brand showcase.',
-        link: '#',
-        linkLabel: 'Watch Video',
-        bgClass: 'editing-bg',
-        mockType: 'video'
+        categoryLabel: 'Web E-Commerce',
+        title: 'Topupin',
+        desc: 'Platform top-up game online otomatis dengan pengiriman instan dan harga termurah.',
+        fullDesc: [
+            "Topupin adalah platform penyedia layanan top-up game online dan produk digital lainnya yang dirancang dengan antarmuka yang modern dan responsif.",
+            "Platform ini memungkinkan pengguna untuk membeli diamond, voucher, dan mata uang game lainnya secara cepat dan aman dengan dukungan berbagai metode pembayaran.",
+            "Topupin dilengkapi dengan fitur proses otomatis sehingga pesanan masuk dalam hitungan detik. Dibangun menggunakan teknologi web terkini untuk memberikan pengalaman pengguna (UX) yang mulus."
+        ],
+        links: [
+            { label: 'GitHub', url: 'https://github.com/awanee/Topupin' }
+        ],
+        bgClass: 'ui-ux-bg',
+        mockType: 'image',
+        imageSrc: topupinImg
     },
     {
         id: 3,
@@ -52,13 +71,21 @@ const projectsData = [
     {
         id: 4,
         category: 'project',
-        categoryLabel: 'UI/UX Design',
-        title: 'Fintech Mobile App',
-        desc: 'A minimalist finance application design emphasizing swift money transfers, elegant balance cards, and a clutter-free transaction dashboard.',
-        link: '#',
-        linkLabel: 'View Figma',
+        categoryLabel: 'Point of Sale',
+        title: 'Nikky Frozen POS',
+        desc: 'Aplikasi kasir (POS) khusus untuk toko frozen food dengan manajemen stok dan multi-cabang.',
+        fullDesc: [
+            "Nikky Frozen POS adalah sistem kasir point-of-sale berbasis web yang dirancang khusus untuk memenuhi kebutuhan operasional toko frozen food.",
+            "Aplikasi ini memiliki fitur lengkap mulai dari pencatatan transaksi kasir, manajemen stok yang terintegrasi, fitur multi-cabang, hingga pengelolaan shift kasir dan riwayat transaksi harian.",
+            "Dengan antarmuka pengguna yang bersih dan intuitif, sistem ini mempermudah kasir dalam memproses pesanan secara efisien dan akurat."
+        ],
+        links: [
+            { label: 'Live App', url: 'https://nikky-frozen-pos.vercel.app' },
+            { label: 'GitHub', url: 'https://github.com/Hanjaya27/nikky_frozen_POS_system' }
+        ],
         bgClass: 'ui-ux-bg-2',
-        mockType: 'mobile-ui'
+        mockType: 'image',
+        imageSrc: nikkyposImg
     },
     {
         id: 5,
@@ -86,6 +113,7 @@ const projectsData = [
 
 export default function Projects() {
     const [activeFilter, setActiveFilter] = useState('project');
+    const [selectedProject, setSelectedProject] = useState(null);
 
     const filteredProjects = projectsData.filter(p => p.category === activeFilter);
 
@@ -113,16 +141,23 @@ export default function Projects() {
             </div>
 
             {/* Projects Grid */}
-            <div className={`projects-grid bento-layout-${filteredProjects.length}`}>
-                {filteredProjects.map((project, index) => (
+            <div className="projects-grid-minimal">
+                {filteredProjects.slice(0, 4).map((project, index) => {
+                    const formattedIndex = String(index + 1).padStart(2, '0');
+                    return (
                     <div 
                         key={project.id} 
-                        className={`project-card bento-item-${index} reveal-fade revealed`}
-                        style={project.category === 'certificate' ? { pointerEvents: 'none' } : {}}
+                        className={`project-card-minimal reveal-fade revealed`}
+                        style={project.category === 'certificate' ? { pointerEvents: 'none' } : { cursor: 'pointer' }}
+                        onClick={() => {
+                            if (project.category !== 'certificate') {
+                                setSelectedProject(project);
+                            }
+                        }}
                     >
                         <div 
-                            className="project-image-wrapper"
-                            style={project.category === 'certificate' ? { aspectRatio: '4/3', height: 'auto', borderBottom: 'none' } : {}}
+                            className="project-image-wrapper-minimal"
+                            style={project.category === 'certificate' ? { aspectRatio: '4/3', height: 'auto' } : {}}
                         >
                             <div className={`project-image-placeholder ${project.bgClass}`}>
                                 
@@ -168,25 +203,73 @@ export default function Projects() {
 
                                 {project.mockType === 'image' && (
                                     <div className="project-mock-image" style={{ width: '100%', height: '100%', borderRadius: 'inherit', overflow: 'hidden', display: 'block' }}>
-                                        <img src={project.imageSrc} alt={project.title} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                                        <img src={project.imageSrc} alt={project.title} style={{ width: '100%', height: '100%', objectFit: 'cover', objectPosition: 'top' }} />
                                     </div>
                                 )}
 
                             </div>
                         </div>
                         {project.category !== 'certificate' && (
-                            <div className="project-info">
-                                <span className="project-tag-item">{project.categoryLabel}</span>
-                                <h3>{project.title}</h3>
-                                <p>{project.desc}</p>
-                                <a href={project.link} target="_self" rel="noreferrer" className="project-link">
-                                    {project.linkLabel} <span>→</span>
-                                </a>
+                            <div className="project-info-minimal">
+                                <div className="info-left">
+                                    <h3>{project.title.split(' (')[0]}</h3>
+                                    <span className="project-tag-minimal">{project.categoryLabel.toUpperCase()}</span>
+                                </div>
+                                <div className="info-right">
+                                    <span className="project-index">{formattedIndex}</span>
+                                </div>
                             </div>
                         )}
                     </div>
-                ))}
+                )})}
             </div>
+
+            {selectedProject && (
+                <div className="project-modal-overlay" onClick={() => setSelectedProject(null)}>
+                    <div className="project-modal-content" onClick={e => e.stopPropagation()}>
+                        <button className="close-modal" onClick={() => setSelectedProject(null)}>×</button>
+                        <div className="modal-inner">
+                            <div className="modal-image-container">
+                                {selectedProject.mockType === 'image' && selectedProject.imageSrc ? (
+                                    <img src={selectedProject.imageSrc} alt={selectedProject.title} />
+                                ) : (
+                                    <div className={`project-image-placeholder ${selectedProject.bgClass} modal-placeholder`}>
+                                        <span>{selectedProject.title} Preview</span>
+                                    </div>
+                                )}
+                            </div>
+                            <div className="modal-details">
+                                <span className="project-tag-item">{selectedProject.categoryLabel}</span>
+                                <h2>{selectedProject.title}</h2>
+                                
+                                <div className="modal-article">
+                                    {selectedProject.fullDesc ? (
+                                        selectedProject.fullDesc.map((p, i) => <p key={i}>{p}</p>)
+                                    ) : (
+                                        <p>{selectedProject.desc}</p>
+                                    )}
+                                </div>
+                                
+                                {selectedProject.links ? (
+                                    <div className="modal-links">
+                                        {selectedProject.links.map((lnk, i) => (
+                                            <a key={i} href={lnk.url} target="_blank" rel="noreferrer" className="project-link">
+                                                {lnk.label} <span>→</span>
+                                            </a>
+                                        ))}
+                                    </div>
+                                ) : (
+                                    <div className="modal-links">
+                                        <a href={selectedProject.link} target="_blank" rel="noreferrer" className="project-link">
+                                            {selectedProject.linkLabel} <span>→</span>
+                                        </a>
+                                    </div>
+                                )}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            )}
         </section>
     );
 }

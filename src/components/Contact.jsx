@@ -1,6 +1,25 @@
-import React, { useState } from 'react';
+import React, { useState, useRef, useEffect, Component } from 'react';
 import Lanyard from './Lanyard';
 import lauzaLanyardImg from '../assets/lauza_lanyard.jpg';
+
+class LanyardErrorBoundary extends Component {
+    constructor(props) {
+        super(props);
+        this.state = { hasError: false };
+    }
+    static getDerivedStateFromError() {
+        return { hasError: true };
+    }
+    componentDidCatch(error, errorInfo) {
+        console.warn("Lanyard 3D component failed to render:", error, errorInfo);
+    }
+    render() {
+        if (this.state.hasError) {
+            return this.props.fallback || null;
+        }
+        return this.props.children;
+    }
+}
 
 export default function Contact() {
     const [status, setStatus] = useState('idle'); // 'idle', 'submitting', 'success'
@@ -10,6 +29,17 @@ export default function Contact() {
         subject: '',
         message: ''
     });
+    const lanyardRef = useRef(null);
+    const [isInView, setIsInView] = useState(false);
+
+    useEffect(() => {
+        if (!lanyardRef.current) return;
+        const observer = new IntersectionObserver(([entry]) => {
+            setIsInView(entry.isIntersecting);
+        }, { rootMargin: '200px' });
+        observer.observe(lanyardRef.current);
+        return () => observer.disconnect();
+    }, []);
 
     const handleInputChange = (e) => {
         const { id, value } = e.target;
@@ -19,8 +49,8 @@ export default function Contact() {
     const handleSubmit = (e) => {
         e.preventDefault();
         
-        const { name, subject, message } = formValues;
-        const mailtoLink = `mailto:nafallauza@gmail.com?subject=${encodeURIComponent(subject || 'New Contact Request')}&body=${encodeURIComponent(`Name: ${name}\n\nMessage:\n${message}`)}`;
+        const { name, email, subject, message } = formValues;
+        const mailtoLink = `mailto:nafallauza@gmail.com?subject=${encodeURIComponent(subject || 'New Contact Request')}&body=${encodeURIComponent(`Name: ${name}\nEmail: ${email}\n\nMessage:\n${message}`)}`;
         window.location.href = mailtoLink;
         
         setStatus('submitting');
@@ -34,12 +64,20 @@ export default function Contact() {
         <section id="contact" className="contact-section">
             <div className="contact-card reveal-fade revealed">
                 {/* Left side: Interactive 3D Lanyard Card */}
-                <div className="contact-lanyard-container">
-                    <Lanyard 
-                        position={[0, 0, 17.5]} 
-                        gravity={[0, -40, 0]} 
-                        frontImage={lauzaLanyardImg} 
-                    />
+                <div className="contact-lanyard-container" ref={lanyardRef}>
+                    {isInView && (
+                        <LanyardErrorBoundary fallback={
+                            <div className="lanyard-fallback" style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100%', width: '100%' }}>
+                                <img src={lauzaLanyardImg} alt="Lauza" style={{ maxWidth: '280px', maxHeight: '420px', borderRadius: '24px', objectFit: 'cover', boxShadow: '0 20px 40px rgba(0,0,0,0.6)', border: '1px solid rgba(255,255,255,0.1)' }} />
+                            </div>
+                        }>
+                            <Lanyard 
+                                position={[0, 0, 17.5]} 
+                                gravity={[0, -40, 0]} 
+                                frontImage={lauzaLanyardImg} 
+                            />
+                        </LanyardErrorBoundary>
+                    )}
                 </div>
 
                 {/* Right side: Contact Form */}

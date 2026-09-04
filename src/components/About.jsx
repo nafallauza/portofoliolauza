@@ -2,8 +2,6 @@ import React from 'react';
 import LogoLoop from './LogoLoop';
 import lauzaImg from '../assets/lauza_about.jpeg';
 import ProfileCard from './ProfileCard';
-import ciscoCert from '../assets/setifikat/ciscoo.jpeg';
-import magangCert from '../assets/setifikat/magang.jpeg';
 
 const ReactIcon = () => (
   <svg viewBox="0 0 100 100" fill="none" stroke="currentColor" strokeWidth="8" className="ticker-svg">
@@ -109,7 +107,7 @@ const techLogos = [
 
 export default function About() {
     return (
-        <section className="about-section">
+        <section id="about" className="about-section">
             <div className="about-logo-ticker-wrapper">
                 <LogoLoop
                     logos={techLogos}
@@ -124,7 +122,7 @@ export default function About() {
                 />
             </div>
 
-            <div id="about" className="about-card reveal-fade revealed" style={{ marginTop: '40px', scrollMarginTop: '110px' }}>
+            <div className="about-card reveal-fade revealed" style={{ marginTop: '40px', scrollMarginTop: '110px' }}>
                 {/* Left side: Bio & Workspace/Skills Table */}
                 <div className="about-bio-content">
                     <table className="about-table">

@@ -70,7 +70,10 @@ export default function Hero() {
                 opacity={0.8}
             />
             <div className="hero-container">
-                {/* Text Background Layer (z-index 1) */}
+                {/* Background Semicircle (z-index 1 - behind text) */}
+                <div className="hero-circle"></div>
+
+                {/* Text Layer (z-index 2 - in front of semicircle) */}
                 <div className="hero-text-bg">
                     <h1 className="hero-title reveal-fade revealed">
                         I'm <span className="accent-orange">Lauza</span>,<br />
@@ -81,22 +84,22 @@ export default function Hero() {
                     </h1>
                 </div>
 
-                {/* Center Cutout & Background Semi-Circle Layer (z-index 2 & 3) */}
+                {/* Person Cutout Avatar Layer (z-index 3 - pops out in front of text!) */}
                 <div className="hero-avatar-wrapper reveal-fade revealed">
-                    <div className="hero-circle"></div>
                     <img src={lauzaImg} alt="Lauza" className="hero-avatar" />
                 </div>
 
-                {/* Floating Info: Testimonial Card (Left) */}
-                <div className="floating-card float-left reveal-fade revealed">
-                    <div className="quote-icon">“</div>
-                    <p className="quote-text">Lauza's exceptional product designs and editing skills ensure our project's success. Highly Recommended.</p>
-                </div>
+                {/* Floating Info Cards Wrapper */}
+                <div className="hero-cards-wrapper">
+                    <div className="floating-card float-left reveal-fade revealed">
+                        <div className="quote-icon">“</div>
+                        <p className="quote-text">Lauza's exceptional product designs and editing skills ensure our project's success. Highly Recommended.</p>
+                    </div>
 
-                {/* Floating Info: Experience Card (Right) */}
-                <div className="floating-card float-right reveal-fade revealed">
-                    <div className="stats-num">3+</div>
-                    <div className="stats-label">Years<br />Experience</div>
+                    <div className="floating-card float-right reveal-fade revealed">
+                        <div className="stats-num">3+</div>
+                        <div className="stats-label">Years<br />Experience</div>
+                    </div>
                 </div>
 
                 {/* Center Bottom Toggle Pill Button */}

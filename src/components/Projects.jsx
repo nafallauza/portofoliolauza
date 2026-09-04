@@ -2,20 +2,21 @@ import React, { useState } from 'react';
 import ciscoCert from '../assets/setifikat/ciscoo.jpeg';
 import magangCert from '../assets/setifikat/magang.jpeg';
 import dermacareImg from '../assets/projects/dermacare.png';
-import topupinImg from '../assets/projects/topupin.png';
-import nikkyposImg from '../assets/projects/nikkypos.png';
+import topupinImg from '../assets/projects/Topupin.png';
+import nikkyImg from '../assets/projects/nikky.png';
+import dengerinImg from '../assets/projects/Dengerin.png';
 
 const projectsData = [
     {
         id: 1,
         category: 'project',
         categoryLabel: 'AI & Web Dev',
-        title: 'DermaCare (AI Skin Analysis)',
-        desc: 'An AI-powered dermatology application built with Streamlit for skin condition analysis and care recommendations.',
+        title: 'DermaCare',
+        desc: 'Aplikasi web analisis kesehatan kulit berbasis AI dan Streamlit dengan rekomendasi perawatan otomatis.',
         fullDesc: [
             "DermaCare adalah aplikasi web cerdas berbasis AI yang dikembangkan menggunakan Streamlit untuk membantu pengguna menganalisis kondisi kulit secara mudah dan cepat.",
-            "Cara kerjanya sangat sederhana: cukup ambil atau unggah foto kulit Anda, lalu sistem akan memproses gambar tersebut dan memberikan analisis awal mengenai masalah kulit yang mungkin ada (seperti jerawat, ruam, dll).",
-            "Aplikasi ini juga menyediakan rekomendasi perawatan yang disesuaikan dengan hasil deteksi, serta fitur konsultasi awal. Meskipun bukan alat diagnosis medis resmi, DermaCare berfungsi sebagai panduan praktis untuk perawatan kulit harian Anda."
+            "Cukup ambil atau unggah foto kulit Anda, lalu sistem akan memproses gambar tersebut dan memberikan analisis awal mengenai masalah kulit yang mungkin ada (jerawat, ruam, dll).",
+            "Aplikasi ini juga menyediakan rekomendasi perawatan yang disesuaikan dengan hasil deteksi, serta fitur konsultasi awal praktis untuk perawatan kulit harian Anda."
         ],
         links: [
             { label: 'Live App', url: 'https://dermacare-app-5eaae5bwvb39sfszlwar7q.streamlit.app/' },
@@ -31,11 +32,11 @@ const projectsData = [
         category: 'project',
         categoryLabel: 'Web E-Commerce',
         title: 'Topupin',
-        desc: 'Platform top-up game online otomatis dengan pengiriman instan dan harga termurah.',
+        desc: 'Platform top-up game online otomatis dengan pengiriman instan, multi-payment, dan harga termurah.',
         fullDesc: [
             "Topupin adalah platform penyedia layanan top-up game online dan produk digital lainnya yang dirancang dengan antarmuka yang modern dan responsif.",
             "Platform ini memungkinkan pengguna untuk membeli diamond, voucher, dan mata uang game lainnya secara cepat dan aman dengan dukungan berbagai metode pembayaran.",
-            "Topupin dilengkapi dengan fitur proses otomatis sehingga pesanan masuk dalam hitungan detik. Dibangun menggunakan teknologi web terkini untuk memberikan pengalaman pengguna (UX) yang mulus."
+            "Topupin dilengkapi dengan fitur proses otomatis sehingga pesanan masuk dalam hitungan detik. Dibangun menggunakan arsitektur Laravel dan Vite."
         ],
         links: [
             { label: 'GitHub', url: 'https://github.com/awanee/Topupin' }
@@ -46,10 +47,51 @@ const projectsData = [
     },
     {
         id: 3,
+        category: 'project',
+        categoryLabel: 'Mobile App & AI',
+        title: 'DengerIn',
+        desc: 'Aplikasi mobile pembelajaran bahasa isyarat melalui visualisasi 3D dan praktik interaktif berbasis AI.',
+        fullDesc: [
+            "DengerIn (Bridging the Silence) adalah aplikasi mobile inovatif yang menyediakan pembelajaran bahasa isyarat melalui visualisasi avatar 3D dan praktik interaktif.",
+            "Mengusung tiga keunggulan utama: Aksesibel, Interaktif (didukung kamera dan AI untuk deteksi gestur), serta Kurikulum Terstruktur yang ramah pemula.",
+            "Dirancang dengan tampilan UI/UX yang inklusif, modern, dan menyenangkan untuk membantu komunikasi teman tuli."
+        ],
+        links: [
+            { label: 'GitHub', url: 'https://github.com/nafallauza' }
+        ],
+        bgClass: 'web-dev-bg',
+        mockType: 'image',
+        imageSrc: dengerinImg
+    },
+    {
+        id: 4,
+        category: 'project',
+        categoryLabel: 'Point of Sale',
+        title: 'Nikky Frozen POS',
+        desc: 'Aplikasi Point of Sale (POS) cepat dan intuitif untuk operasional toko frozen food dengan manajemen kasir.',
+        fullDesc: [
+            "Nikky Frozen POS adalah sistem kasir point-of-sale berbasis web yang dirancang khusus untuk memenuhi kebutuhan operasional toko frozen food.",
+            "Menghadirkan katalog produk interaktif, pemilihan cepat, keranjang belanja instan, kalkulasi otomatis total transaksi, serta pengelolaan shift kerja kasir.",
+            "Mempermudah kasir memproses pesanan pelanggan secara cepat, akurat, dan efisien."
+        ],
+        links: [
+            { label: 'Live App', url: 'https://nikky-frozen-pos.vercel.app' },
+            { label: 'GitHub', url: 'https://github.com/Hanjaya27/nikky_frozen_POS_system' }
+        ],
+        bgClass: 'ui-ux-bg-2',
+        mockType: 'image',
+        imageSrc: nikkyImg
+    },
+    {
+        id: 6,
         category: 'certificate',
         categoryLabel: 'Certification',
         title: 'Cisco Networking Academy',
-        desc: 'Completed comprehensive networking curriculum and hands-on training via Cisco.',
+        desc: 'CCNA: Introduction to Networks - Universitas Amikom Yogyakarta & Cisco Networking Academy.',
+        fullDesc: [
+            "Sertifikasi resmi CCNA: Introduction to Networks yang diselenggarakan oleh Cisco Networking Academy bekerja sama dengan Universitas Amikom Yogyakarta.",
+            "Membuktikan kompetensi dalam arsitektur jaringan, protokol komunikasi TCP/IP, IP addressing (IPv4/IPv6), subnetting, switching, dan konfigurasi dasar perangkat Cisco."
+        ],
         link: ciscoCert,
         linkLabel: 'View Certificate',
         bgClass: 'web-dev-bg',
@@ -60,54 +102,17 @@ const projectsData = [
         id: 7,
         category: 'certificate',
         categoryLabel: 'Experience',
-        title: 'Internship Certificate',
-        desc: 'Successfully completed professional internship program and contributed to real-world projects.',
+        title: 'Internship Certificate - PT GIT Solution',
+        desc: 'Sertifikat magang Fullstack Web Developer di PT GIT Solution (Oktober - Desember 2024).',
+        fullDesc: [
+            "Sertifikat resmi penyelesaian magang industri sebagai Fullstack Web Developer di PT GIT Solution (1 Oktober - 31 Desember 2024).",
+            "Terlibat dalam perancangan antarmuka UI/UX di Figma, pengembangan aplikasi web responsif menggunakan React, serta integrasi sistem backend."
+        ],
         link: magangCert,
         linkLabel: 'View Certificate',
         bgClass: 'ui-ux-bg',
         mockType: 'image',
         imageSrc: magangCert
-    },
-    {
-        id: 4,
-        category: 'project',
-        categoryLabel: 'Point of Sale',
-        title: 'Nikky Frozen POS',
-        desc: 'Aplikasi kasir (POS) khusus untuk toko frozen food dengan manajemen stok dan multi-cabang.',
-        fullDesc: [
-            "Nikky Frozen POS adalah sistem kasir point-of-sale berbasis web yang dirancang khusus untuk memenuhi kebutuhan operasional toko frozen food.",
-            "Aplikasi ini memiliki fitur lengkap mulai dari pencatatan transaksi kasir, manajemen stok yang terintegrasi, fitur multi-cabang, hingga pengelolaan shift kasir dan riwayat transaksi harian.",
-            "Dengan antarmuka pengguna yang bersih dan intuitif, sistem ini mempermudah kasir dalam memproses pesanan secara efisien dan akurat."
-        ],
-        links: [
-            { label: 'Live App', url: 'https://nikky-frozen-pos.vercel.app' },
-            { label: 'GitHub', url: 'https://github.com/Hanjaya27/nikky_frozen_POS_system' }
-        ],
-        bgClass: 'ui-ux-bg-2',
-        mockType: 'image',
-        imageSrc: nikkyposImg
-    },
-    {
-        id: 5,
-        category: 'project',
-        categoryLabel: 'Web Development',
-        title: 'E-Commerce Platform',
-        desc: 'A full-stack e-commerce solution with dynamic cart management, smooth page transitions, and an integrated payment gateway interface.',
-        link: '#',
-        linkLabel: 'Live Demo',
-        bgClass: 'web-dev-bg',
-        mockType: 'code'
-    },
-    {
-        id: 6,
-        category: 'project',
-        categoryLabel: 'UI/UX Design',
-        title: 'Healthcare Portal',
-        desc: 'Patient management dashboard designed for clinics, featuring a calming color palette and intuitive appointment scheduling flow.',
-        link: '#',
-        linkLabel: 'View Case Study',
-        bgClass: 'ui-ux-bg',
-        mockType: 'ui-ux'
     }
 ];
 
@@ -142,24 +147,20 @@ export default function Projects() {
 
             {/* Projects Grid */}
             <div className="projects-grid-minimal">
-                {filteredProjects.slice(0, 4).map((project, index) => {
+                {filteredProjects.map((project, index) => {
                     const formattedIndex = String(index + 1).padStart(2, '0');
                     return (
                     <div 
                         key={project.id} 
-                        className={`project-card-minimal reveal-fade revealed`}
-                        style={project.category === 'certificate' ? { pointerEvents: 'none' } : { cursor: 'pointer' }}
-                        onClick={() => {
-                            if (project.category !== 'certificate') {
-                                setSelectedProject(project);
-                            }
-                        }}
+                        className="project-card-minimal reveal-fade revealed"
+                        style={{ cursor: 'pointer' }}
+                        onClick={() => setSelectedProject(project)}
                     >
                         <div 
-                            className="project-image-wrapper-minimal"
-                            style={project.category === 'certificate' ? { aspectRatio: '4/3', height: 'auto' } : {}}
+                            className={`project-image-wrapper-minimal ${project.category === 'certificate' ? 'is-certificate' : ''}`}
+                            style={project.category === 'certificate' ? { aspectRatio: '16/10', height: 'auto', borderRadius: '0px' } : { borderRadius: '0px' }}
                         >
-                            <div className={`project-image-placeholder ${project.bgClass}`}>
+                            <div className={`project-image-placeholder ${project.bgClass}`} style={{ borderRadius: '0px' }}>
                                 
                                 {project.mockType === 'ui-ux' && (
                                     <div className="project-mock-ui">
@@ -202,24 +203,32 @@ export default function Projects() {
                                 )}
 
                                 {project.mockType === 'image' && (
-                                    <div className="project-mock-image" style={{ width: '100%', height: '100%', borderRadius: 'inherit', overflow: 'hidden', display: 'block' }}>
-                                        <img src={project.imageSrc} alt={project.title} style={{ width: '100%', height: '100%', objectFit: 'cover', objectPosition: 'top' }} />
+                                    <div className="project-mock-image" style={{ width: '100%', height: '100%', borderRadius: '0px', overflow: 'hidden', display: 'block' }}>
+                                        <img 
+                                            src={project.imageSrc} 
+                                            alt={project.title} 
+                                            style={{ 
+                                                width: '100%', 
+                                                height: '100%', 
+                                                objectFit: project.category === 'certificate' ? 'contain' : 'cover', 
+                                                objectPosition: 'center',
+                                                borderRadius: '0px'
+                                            }} 
+                                        />
                                     </div>
                                 )}
 
                             </div>
                         </div>
-                        {project.category !== 'certificate' && (
-                            <div className="project-info-minimal">
-                                <div className="info-left">
-                                    <h3>{project.title.split(' (')[0]}</h3>
-                                    <span className="project-tag-minimal">{project.categoryLabel.toUpperCase()}</span>
-                                </div>
-                                <div className="info-right">
-                                    <span className="project-index">{formattedIndex}</span>
-                                </div>
+                        <div className="project-info-minimal">
+                            <div className="info-left">
+                                <h3>{project.title}</h3>
+                                <span className="project-tag-minimal">{project.categoryLabel.toUpperCase()}</span>
                             </div>
-                        )}
+                            <div className="info-right">
+                                <span className="project-index">{formattedIndex}</span>
+                            </div>
+                        </div>
                     </div>
                 )})}
             </div>
@@ -258,13 +267,13 @@ export default function Projects() {
                                             </a>
                                         ))}
                                     </div>
-                                ) : (
+                                ) : selectedProject.link && selectedProject.link !== '#' ? (
                                     <div className="modal-links">
                                         <a href={selectedProject.link} target="_blank" rel="noreferrer" className="project-link">
-                                            {selectedProject.linkLabel} <span>→</span>
+                                            {selectedProject.linkLabel || 'View'} <span>→</span>
                                         </a>
                                     </div>
-                                )}
+                                ) : null}
                             </div>
                         </div>
                     </div>

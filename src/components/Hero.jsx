@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from 'react';
-import lauzaImg from '../assets/lauza_2.png';
+import lauzaImg from '../assets/lauza_hero.webp';
 import SideRays from './SideRays';
+import { projectCount } from './Projects';
 
-const roles = ['Frontend Developer', 'UI/UX Designer', 'Video Editor'];
+const roles = ['Full-stack Developer', 'Video Editor'];
 
 export default function Hero() {
     const [activeTarget, setActiveTarget] = useState('#projects');
@@ -92,13 +93,14 @@ export default function Hero() {
                 {/* Floating Info Cards Wrapper */}
                 <div className="hero-cards-wrapper">
                     <div className="floating-card float-left reveal-fade revealed">
-                        <div className="quote-icon">“</div>
-                        <p className="quote-text">Lauza's exceptional product designs and editing skills ensure our project's success. Highly Recommended.</p>
+                        <div className="now-label"><span className="now-dot" aria-hidden="true" />Currently</div>
+                        <p className="now-role">Video Editor &amp; Live Stream Operator</p>
+                        <p className="now-org">ABP Startup Incubator · Yogyakarta</p>
                     </div>
 
                     <div className="floating-card float-right reveal-fade revealed">
-                        <div className="stats-num">3+</div>
-                        <div className="stats-label">Years<br />Experience</div>
+                        <div className="stats-num">{projectCount}</div>
+                        <div className="stats-label">Projects<br />Built</div>
                     </div>
                 </div>
 

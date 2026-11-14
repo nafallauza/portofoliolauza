@@ -1,5 +1,7 @@
-import React, { useState, useRef, useEffect, Component } from 'react';
-import Lanyard from './Lanyard';
+import React, { useState, useRef, useEffect, Component, lazy, Suspense } from 'react';
+
+// three.js + rapier hanya dimuat saat section contact mendekati viewport
+const Lanyard = lazy(() => import('./Lanyard'));
 import lauzaLanyardImg from '../assets/lauza_lanyard.jpg';
 
 class LanyardErrorBoundary extends Component {
@@ -35,8 +37,11 @@ export default function Contact() {
     useEffect(() => {
         if (!lanyardRef.current) return;
         const observer = new IntersectionObserver(([entry]) => {
-            setIsInView(entry.isIntersecting);
-        }, { rootMargin: '200px' });
+            if (entry.isIntersecting) {
+                setIsInView(true);
+                observer.disconnect();
+            }
+        }, { rootMargin: '400px' });
         observer.observe(lanyardRef.current);
         return () => observer.disconnect();
     }, []);
@@ -62,7 +67,7 @@ export default function Contact() {
 
     return (
         <section id="contact" className="contact-section">
-            <div className="contact-card reveal-fade revealed">
+            <div className="contact-card reveal">
                 {/* Left side: Interactive 3D Lanyard Card */}
                 <div className="contact-lanyard-container" ref={lanyardRef}>
                     {isInView && (
@@ -71,11 +76,13 @@ export default function Contact() {
                                 <img src={lauzaLanyardImg} alt="Lauza" style={{ maxWidth: '280px', maxHeight: '420px', borderRadius: '24px', objectFit: 'cover', boxShadow: '0 20px 40px rgba(0,0,0,0.6)', border: '1px solid rgba(255,255,255,0.1)' }} />
                             </div>
                         }>
-                            <Lanyard 
-                                position={[0, 0, 17.5]} 
-                                gravity={[0, -40, 0]} 
-                                frontImage={lauzaLanyardImg} 
-                            />
+                            <Suspense fallback={null}>
+                                <Lanyard 
+                                    position={[0, 0, 17.5]} 
+                                    gravity={[0, -40, 0]} 
+                                    frontImage={lauzaLanyardImg} 
+                                />
+                            </Suspense>
                         </LanyardErrorBoundary>
                     )}
                 </div>
@@ -83,10 +90,10 @@ export default function Contact() {
                 {/* Right side: Contact Form */}
                 <div className="contact-form-container">
                     <div className="contact-form-header">
-                        <span className="contact-form-tag">Get in Touch</span>
+                        <span className="section-index">04</span>
                         <h3 className="contact-form-title">Let's create something together</h3>
                         <div className="contact-socials">
-                            <a href="https://www.linkedin.com/in/nafal-lauza-83a579275/?locale=in" target="_blank" rel="noreferrer" aria-label="LinkedIn">
+                            <a href="https://www.linkedin.com/in/nafal-lauza-83a579275/" target="_blank" rel="noreferrer" aria-label="LinkedIn">
                                 <svg viewBox="0 0 24 24" fill="currentColor">
                                   <path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z"/>
                                 </svg>

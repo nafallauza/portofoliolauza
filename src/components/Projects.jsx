@@ -1,10 +1,10 @@
-import React, { useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import ciscoCert from '../assets/setifikat/ciscoo.jpeg';
 import magangCert from '../assets/setifikat/magang.jpeg';
-import dermacareImg from '../assets/projects/dermacare.png';
-import topupinImg from '../assets/projects/Topupin.png';
-import nikkyImg from '../assets/projects/nikky.png';
-import dengerinImg from '../assets/projects/Dengerin.png';
+import dermacareImg from '../assets/projects/dermacare.webp';
+import topupinImg from '../assets/projects/Topupin.webp';
+import nikkyImg from '../assets/projects/nikky.webp';
+import dengerinImg from '../assets/projects/Dengerin.webp';
 
 const projectsData = [
     {
@@ -56,9 +56,7 @@ const projectsData = [
             "Mengusung tiga keunggulan utama: Aksesibel, Interaktif (didukung kamera dan AI untuk deteksi gestur), serta Kurikulum Terstruktur yang ramah pemula.",
             "Dirancang dengan tampilan UI/UX yang inklusif, modern, dan menyenangkan untuk membantu komunikasi teman tuli."
         ],
-        links: [
-            { label: 'GitHub', url: 'https://github.com/nafallauza' }
-        ],
+        // TODO: tambahkan link GitHub saat repo DengerIn sudah ada
         bgClass: 'web-dev-bg',
         mockType: 'image',
         imageSrc: dengerinImg
@@ -87,6 +85,8 @@ const projectsData = [
         category: 'certificate',
         categoryLabel: 'Certification',
         title: 'Cisco Networking Academy',
+        issuer: 'Cisco Networking Academy',
+        date: 'Jan 2025',
         desc: 'CCNA: Introduction to Networks - Universitas Amikom Yogyakarta & Cisco Networking Academy.',
         fullDesc: [
             "Sertifikasi resmi CCNA: Introduction to Networks yang diselenggarakan oleh Cisco Networking Academy bekerja sama dengan Universitas Amikom Yogyakarta.",
@@ -103,6 +103,8 @@ const projectsData = [
         category: 'certificate',
         categoryLabel: 'Experience',
         title: 'Internship Certificate - PT GIT Solution',
+        issuer: 'PT GIT Solution',
+        date: 'Oct – Dec 2024',
         desc: 'Sertifikat magang Fullstack Web Developer di PT GIT Solution (Oktober - Desember 2024).',
         fullDesc: [
             "Sertifikat resmi penyelesaian magang industri sebagai Fullstack Web Developer di PT GIT Solution (1 Oktober - 31 Desember 2024).",
@@ -116,168 +118,311 @@ const projectsData = [
     }
 ];
 
+// Dipakai kartu statistik di hero supaya angkanya ikut bertambah
+export const projectCount = projectsData.filter((p) => p.category === 'project').length;
+
+// Project unggulan di tumpukan; sisanya dibuka lewat tombol
+const FEATURED_LIMIT = 3;
+
+const Icon = ({ d, size = 20 }) => (
+    <svg viewBox="0 0 24 24" width={size} height={size} fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+        {d.map((path) => <path key={path} d={path} />)}
+    </svg>
+);
+const ARROW_UP_RIGHT = ['M7 7h10v10', 'M7 17 17 7'];
+const CHEVRON_LEFT = ['m15 18-6-6 6-6'];
+const CHEVRON_RIGHT = ['m9 18 6-6-6-6'];
+const CLOSE = ['M18 6 6 18', 'm6 6 12 12'];
+
+function ShowMore({ total, limit, expanded, onToggle, label }) {
+    if (total <= limit) return null;
+    return (
+        <button type="button" className="show-more" onClick={onToggle} aria-expanded={expanded}>
+            <span className="show-more-label">{expanded ? 'Show less' : `See other ${label}`}</span>
+            {!expanded && <span className="show-more-count">{String(total - limit).padStart(2, '0')}</span>}
+            <span className="show-more-icon"><Icon d={expanded ? ['m18 15-6-6-6 6'] : ['m6 9 6 6 6-6']} size={20} /></span>
+        </button>
+    );
+}
+
+// Arsip project lainnya: baris editorial, preview gambar mengikuti kursor di desktop
+function MoreProjects({ projects, onSelect }) {
+    const [hovered, setHovered] = useState(null);
+    const listRef = useRef(null);
+    const previewRef = useRef(null);
+
+    const handleMove = (e) => {
+        const r = listRef.current.getBoundingClientRect();
+        previewRef.current.style.transform = `translate(${e.clientX - r.left + 24}px, ${e.clientY - r.top}px) translateY(-50%)`;
+    };
+
+    return (
+        <div className="archive" ref={listRef} onMouseMove={handleMove} onMouseLeave={() => setHovered(null)}>
+            {projects.map((p, i) => (
+                <button key={p.id} type="button" className="archive-row" onMouseEnter={() => setHovered(p.id)} onClick={() => onSelect(p)}>
+                    <span className="archive-num">{String(FEATURED_LIMIT + i + 1).padStart(2, '0')}</span>
+                    <img className="archive-thumb" src={p.imageSrc} alt="" loading="lazy" />
+                    <span className="archive-title">{p.title}</span>
+                    <span className="archive-desc">{p.desc}</span>
+                    <span className="stack-cat">{p.categoryLabel}</span>
+                    <span className="archive-arrow"><Icon d={ARROW_UP_RIGHT} size={20} /></span>
+                </button>
+            ))}
+            <div ref={previewRef} className={`archive-preview ${hovered ? 'is-visible' : ''}`} aria-hidden="true">
+                {projects.map((p) => (
+                    <img key={p.id} src={p.imageSrc} alt="" className={hovered === p.id ? 'is-active' : ''} />
+                ))}
+            </div>
+        </div>
+    );
+}
+
+// Kartu project menumpuk saat discroll. Judul section ikut menempel, dan bar judul
+// tiap kartu tetap terlihat, jadi semuanya muat dalam satu layar.
+function ProjectStack({ projects, onSelect }) {
+    const [expanded, setExpanded] = useState(false);
+    const visible = projects.slice(0, FEATURED_LIMIT);
+    const others = projects.slice(FEATURED_LIMIT);
+    const listRef = useRef(null);
+
+    useEffect(() => {
+        const list = listRef.current;
+        const head = list.closest('section').querySelector('.section-head');
+        const cards = [...list.children];
+        const n = cards.length;
+
+        const layout = () => {
+            const mobile = window.innerWidth <= 768;
+            // Di HP judul tidak ikut menempel supaya kartu tetap lega
+            const top = mobile ? 80 : 84 + head.offsetHeight + 12;
+            list.style.setProperty('--stack-top', `${top}px`);
+            list.style.setProperty('--n', n);
+            update();
+        };
+        const update = () => {
+            const r = list.getBoundingClientRect();
+            const p = Math.min(1, Math.max(0, -r.top / Math.max(1, r.height - window.innerHeight)));
+            cards.forEach((card, i) => {
+                const start = i / n;
+                const t = Math.min(1, Math.max(0, (p - start) / (1 - start)));
+                card.style.setProperty('--dim', ((n - 1 - i) * 0.14 * t).toFixed(3));
+            });
+        };
+
+        layout();
+        window.addEventListener('scroll', update, { passive: true });
+        window.addEventListener('resize', layout);
+        return () => {
+            window.removeEventListener('scroll', update);
+            window.removeEventListener('resize', layout);
+        };
+    }, [visible.length]);
+
+    return (
+        <>
+            <div className="stack-list" ref={listRef}>
+                {visible.map((p, i) => (
+                    <article key={p.id} className="stack-card" style={{ '--i': i }}>
+                        <button type="button" className="stack-tab" onClick={() => onSelect(p)}>
+                            <span className="stack-index">{String(i + 1).padStart(2, '0')}</span>
+                            <span className="stack-tab-title">{p.title}</span>
+                            <span className="stack-cat">{p.categoryLabel}</span>
+                        </button>
+                        <div className="stack-inner">
+                            <div className="stack-info">
+                                <h3 className="stack-title">{p.title}</h3>
+                                <p className="stack-desc">{p.desc}</p>
+                                <div className="stack-actions">
+                                    <button type="button" className="stack-btn is-primary" onClick={() => onSelect(p)}>
+                                        View details <Icon d={ARROW_UP_RIGHT} size={16} />
+                                    </button>
+                                    {p.links?.[0] && (
+                                        <a className="stack-btn" href={p.links[0].url} target="_blank" rel="noreferrer">
+                                            {p.links[0].label} <Icon d={ARROW_UP_RIGHT} size={16} />
+                                        </a>
+                                    )}
+                                </div>
+                            </div>
+                            <button type="button" className="stack-media" onClick={() => onSelect(p)} aria-label={`Open ${p.title}`}>
+                                <img src={p.imageSrc} alt="" loading="lazy" />
+                            </button>
+                        </div>
+                    </article>
+                ))}
+            </div>
+            <ShowMore total={projects.length} limit={FEATURED_LIMIT} expanded={expanded} onToggle={() => setExpanded(!expanded)} label="projects" />
+            {expanded && <MoreProjects projects={others} onSelect={onSelect} />}
+        </>
+    );
+}
+
+// Credential viewer: daftar di kiri, sertifikat tampil besar seperti kertas di kanan
+function CertificateViewer({ certificates, onSelect }) {
+    const [active, setActive] = useState(0);
+    const cert = certificates[active];
+
+    const tilt = (e) => {
+        const el = e.currentTarget;
+        const r = el.getBoundingClientRect();
+        const x = (e.clientX - r.left) / r.width;
+        const y = (e.clientY - r.top) / r.height;
+        el.style.setProperty('--rx', `${(0.5 - y) * 8}deg`);
+        el.style.setProperty('--ry', `${(x - 0.5) * 10}deg`);
+        el.style.setProperty('--mx', `${x * 100}%`);
+        el.style.setProperty('--my', `${y * 100}%`);
+    };
+    const reset = (e) => {
+        e.currentTarget.style.setProperty('--rx', '0deg');
+        e.currentTarget.style.setProperty('--ry', '0deg');
+    };
+
+    return (
+        <div className="cred reveal">
+            <ol className="cred-list">
+                {certificates.map((c, i) => (
+                    <li key={c.id}>
+                        <button
+                            type="button"
+                            className={`cred-item ${i === active ? 'is-active' : ''}`}
+                            onMouseEnter={() => setActive(i)}
+                            onFocus={() => setActive(i)}
+                            onClick={() => onSelect(c)}
+                        >
+                            <span className="cred-num">{String(i + 1).padStart(2, '0')}</span>
+                            <span className="cred-text">
+                                <span className="cred-title">{c.title}</span>
+                                <span className="cred-meta">{c.issuer} · {c.date}</span>
+                            </span>
+                            <span className="cred-type">{c.categoryLabel}</span>
+                        </button>
+                    </li>
+                ))}
+            </ol>
+
+            <div className="cred-stage">
+                <button type="button" className="cred-paper" onClick={() => onSelect(cert)} onMouseMove={tilt} onMouseLeave={reset} aria-label={`Open ${cert.title}`}>
+                    <img key={cert.id} src={cert.imageSrc} alt={cert.title} />
+                    <span className="cert-glare" aria-hidden="true" />
+                </button>
+                <div className="cred-caption">
+                    <span>
+                        <span className="cred-caption-title">{cert.title}</span>
+                        <span className="cred-meta">{cert.desc}</span>
+                    </span>
+                    <button type="button" className="stack-btn" onClick={() => onSelect(cert)}>
+                        View certificate <Icon d={ARROW_UP_RIGHT} size={16} />
+                    </button>
+                </div>
+            </div>
+        </div>
+    );
+}
+
+function ProjectModal({ items, index, onChange, onClose }) {
+    const item = items[index];
+    const go = (step) => onChange((index + step + items.length) % items.length);
+
+    useEffect(() => {
+        const onKey = (e) => {
+            if (e.key === 'Escape') onClose();
+            if (e.key === 'ArrowRight') onChange((index + 1) % items.length);
+            if (e.key === 'ArrowLeft') onChange((index - 1 + items.length) % items.length);
+        };
+        window.addEventListener('keydown', onKey);
+        return () => window.removeEventListener('keydown', onKey);
+    }, [index, items.length, onChange, onClose]);
+
+    useEffect(() => {
+        const prev = document.body.style.overflow;
+        document.body.style.overflow = 'hidden';
+        return () => { document.body.style.overflow = prev; };
+    }, []);
+
+    const links = item.links ?? (item.link && item.link !== '#' ? [{ label: item.linkLabel || 'View', url: item.link }] : []);
+
+    return (
+        <div className="pm-overlay" onClick={onClose}>
+            <div className="pm-sheet" role="dialog" aria-modal="true" aria-label={item.title} onClick={(e) => e.stopPropagation()}>
+                <div className="pm-bar">
+                    <span className="pm-count">{String(index + 1).padStart(2, '0')} / {String(items.length).padStart(2, '0')}</span>
+                    <div className="pm-actions">
+                        {items.length > 1 && (
+                            <>
+                                <button type="button" className="pm-icon" onClick={() => go(-1)} aria-label="Previous"><Icon d={CHEVRON_LEFT} /></button>
+                                <button type="button" className="pm-icon" onClick={() => go(1)} aria-label="Next"><Icon d={CHEVRON_RIGHT} /></button>
+                            </>
+                        )}
+                        <button type="button" className="pm-icon" onClick={onClose} aria-label="Close"><Icon d={CLOSE} /></button>
+                    </div>
+                </div>
+
+                <div className="pm-body" key={item.id}>
+                    <div className={`pm-media ${item.category === 'certificate' ? 'is-certificate' : ''}`}>
+                        <img src={item.imageSrc} alt={item.title} />
+                    </div>
+                    <div className="pm-details">
+                        <span className="pm-label">{item.categoryLabel}</span>
+                        <h2>{item.title}</h2>
+                        <div className="pm-text">
+                            {(item.fullDesc ?? [item.desc]).map((para, i) => <p key={i}>{para}</p>)}
+                        </div>
+                        {links.length > 0 && (
+                            <div className="pm-links">
+                                {links.map((lnk) => (
+                                    <a key={lnk.url} href={lnk.url} target="_blank" rel="noreferrer" className="pm-link">
+                                        {lnk.label} <Icon d={ARROW_UP_RIGHT} size={16} />
+                                    </a>
+                                ))}
+                            </div>
+                        )}
+                    </div>
+                </div>
+            </div>
+        </div>
+    );
+}
+
 export default function Projects() {
     const [activeFilter, setActiveFilter] = useState('project');
-    const [selectedProject, setSelectedProject] = useState(null);
+    const [selectedIndex, setSelectedIndex] = useState(null);
 
     const filteredProjects = projectsData.filter(p => p.category === activeFilter);
+    const select = (item) => setSelectedIndex(filteredProjects.indexOf(item));
 
     return (
         <section id="projects" className="projects-section">
-            <div className="section-header">
-                <span className="section-tag">Work Gallery</span>
-                <h2 className="section-title">Selected Projects</h2>
-            </div>
-
-            {/* Category Filter Tabs */}
-            <div className="project-filters reveal-fade revealed">
-                <button 
-                    className={`filter-btn ${activeFilter === 'project' ? 'active' : ''}`} 
-                    onClick={() => setActiveFilter('project')}
-                >
-                    Project
-                </button>
-                <button 
-                    className={`filter-btn ${activeFilter === 'certificate' ? 'active' : ''}`} 
-                    onClick={() => setActiveFilter('certificate')}
-                >
-                    Certificate
-                </button>
-            </div>
-
-            {/* Projects Grid */}
-            <div className="projects-grid-minimal">
-                {filteredProjects.map((project, index) => {
-                    const formattedIndex = String(index + 1).padStart(2, '0');
-                    return (
-                    <div 
-                        key={project.id} 
-                        className="project-card-minimal reveal-fade revealed"
-                        style={{ cursor: 'pointer' }}
-                        onClick={() => setSelectedProject(project)}
-                    >
-                        <div 
-                            className={`project-image-wrapper-minimal ${project.category === 'certificate' ? 'is-certificate' : ''}`}
-                            style={project.category === 'certificate' ? { aspectRatio: '16/10', height: 'auto', borderRadius: '0px' } : { borderRadius: '0px' }}
-                        >
-                            <div className={`project-image-placeholder ${project.bgClass}`} style={{ borderRadius: '0px' }}>
-                                
-                                {project.mockType === 'ui-ux' && (
-                                    <div className="project-mock-ui">
-                                        <div className="mock-nav"><span></span><span></span><span></span></div>
-                                        <div className="mock-hero">
-                                            <div className="mock-title"></div>
-                                            <div className="mock-btn"></div>
-                                        </div>
-                                        <div className="mock-cards">
-                                            <div></div><div></div>
-                                        </div>
-                                    </div>
-                                )}
-
-                                {project.mockType === 'video' && (
-                                    <div className="project-mock-video">
-                                        <div className="play-icon-svg">
-                                            <svg viewBox="0 0 24 24" width="36" height="36" fill="currentColor">
-                                                <path d="M8 5v14l11-7z"/>
-                                            </svg>
-                                        </div>
-                                        <span className="video-duration">0:45</span>
-                                    </div>
-                                )}
-
-                                {project.mockType === 'code' && (
-                                    <div className="project-mock-code">
-                                        <span className="code-line">&lt;div class="grid-glow"&gt;</span>
-                                        <span className="code-line indent">&lt;h1&gt;Future is Here&lt;/h1&gt;</span>
-                                        <span className="code-line">&lt;/div&gt;</span>
-                                    </div>
-                                )}
-
-                                {project.mockType === 'mobile-ui' && (
-                                    <div className="project-mock-ui mobile">
-                                        <div className="mock-status-bar"><span>9:41</span><span>🔋</span></div>
-                                        <div className="mock-app-card"></div>
-                                        <div className="mock-app-btn"></div>
-                                    </div>
-                                )}
-
-                                {project.mockType === 'image' && (
-                                    <div className="project-mock-image" style={{ width: '100%', height: '100%', borderRadius: '0px', overflow: 'hidden', display: 'block' }}>
-                                        <img 
-                                            src={project.imageSrc} 
-                                            alt={project.title} 
-                                            style={{ 
-                                                width: '100%', 
-                                                height: '100%', 
-                                                objectFit: project.category === 'certificate' ? 'contain' : 'cover', 
-                                                objectPosition: 'center',
-                                                borderRadius: '0px'
-                                            }} 
-                                        />
-                                    </div>
-                                )}
-
-                            </div>
-                        </div>
-                        <div className="project-info-minimal">
-                            <div className="info-left">
-                                <h3>{project.title}</h3>
-                                <span className="project-tag-minimal">{project.categoryLabel.toUpperCase()}</span>
-                            </div>
-                            <div className="info-right">
-                                <span className="project-index">{formattedIndex}</span>
-                            </div>
-                        </div>
-                    </div>
-                )})}
-            </div>
-
-            {selectedProject && (
-                <div className="project-modal-overlay" onClick={() => setSelectedProject(null)}>
-                    <div className="project-modal-content" onClick={e => e.stopPropagation()}>
-                        <button className="close-modal" onClick={() => setSelectedProject(null)}>×</button>
-                        <div className="modal-inner">
-                            <div className="modal-image-container">
-                                {selectedProject.mockType === 'image' && selectedProject.imageSrc ? (
-                                    <img src={selectedProject.imageSrc} alt={selectedProject.title} />
-                                ) : (
-                                    <div className={`project-image-placeholder ${selectedProject.bgClass} modal-placeholder`}>
-                                        <span>{selectedProject.title} Preview</span>
-                                    </div>
-                                )}
-                            </div>
-                            <div className="modal-details">
-                                <span className="project-tag-item">{selectedProject.categoryLabel}</span>
-                                <h2>{selectedProject.title}</h2>
-                                
-                                <div className="modal-article">
-                                    {selectedProject.fullDesc ? (
-                                        selectedProject.fullDesc.map((p, i) => <p key={i}>{p}</p>)
-                                    ) : (
-                                        <p>{selectedProject.desc}</p>
-                                    )}
-                                </div>
-                                
-                                {selectedProject.links ? (
-                                    <div className="modal-links">
-                                        {selectedProject.links.map((lnk, i) => (
-                                            <a key={i} href={lnk.url} target="_blank" rel="noreferrer" className="project-link">
-                                                {lnk.label} <span>→</span>
-                                            </a>
-                                        ))}
-                                    </div>
-                                ) : selectedProject.link && selectedProject.link !== '#' ? (
-                                    <div className="modal-links">
-                                        <a href={selectedProject.link} target="_blank" rel="noreferrer" className="project-link">
-                                            {selectedProject.linkLabel || 'View'} <span>→</span>
-                                        </a>
-                                    </div>
-                                ) : null}
-                            </div>
-                        </div>
-                    </div>
+            <div className="section-head reveal">
+                <div>
+                    <span className="section-index">02</span>
+                    <h2 className="section-title">Selected Work</h2>
+                    <p className="section-lead">Apps and websites I've designed and built, plus the certificates I picked up along the way.</p>
                 </div>
+
+            <div className="project-filters">
+                {['project', 'certificate'].map((cat) => (
+                    <button
+                        key={cat}
+                        className={`filter-btn ${activeFilter === cat ? 'active' : ''}`}
+                        onClick={() => { setActiveFilter(cat); setSelectedIndex(null); }}
+                    >
+                        {cat === 'project' ? 'Projects' : 'Certificates'}
+                        <span className="filter-count">{projectsData.filter(p => p.category === cat).length}</span>
+                    </button>
+                ))}
+            </div>
+            </div>
+
+            {activeFilter === 'project'
+                ? <ProjectStack projects={filteredProjects} onSelect={select} />
+                : <CertificateViewer certificates={filteredProjects} onSelect={select} />}
+
+            {selectedIndex !== null && (
+                <ProjectModal
+                    items={filteredProjects}
+                    index={selectedIndex}
+                    onChange={setSelectedIndex}
+                    onClose={() => setSelectedIndex(null)}
+                />
             )}
         </section>
     );

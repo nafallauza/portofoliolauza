@@ -6,6 +6,7 @@ import Projects from './components/Projects';
 import Experience from './components/Experience';
 import Contact from './components/Contact';
 import ClickSpark from './components/ClickSpark';
+import Footer from './components/Footer';
 
 export default function App() {
     useEffect(() => {
@@ -45,13 +46,7 @@ export default function App() {
                 <Contact />
             </main>
 
-            {/* Footer */}
-            <footer className="footer">
-                <div className="footer-content">
-                    <p>&copy; 2026 Lauza. All rights reserved.</p>
-                    <p>Designed with premium aesthetics & clean code.</p>
-                </div>
-            </footer>
+            <Footer />
         </ClickSpark>
     );
 }

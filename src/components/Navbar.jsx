@@ -13,19 +13,18 @@ export default function Navbar() {
                 setScrolled(false);
             }
 
-            // Track active section on scroll
-            const sections = document.querySelectorAll('section');
+            // Hanya section utama yang punya id; section di dalam komponen (grafik GitHub) diabaikan
             let current = 'home';
-            sections.forEach(section => {
-                const sectionTop = section.offsetTop;
-                if (window.pageYOffset >= (sectionTop - 150)) {
-                    current = section.getAttribute('id') || 'home';
-                }
+            document.querySelectorAll('main > section[id]').forEach(section => {
+                if (section.getBoundingClientRect().top <= 150) current = section.id;
             });
+            // Di dasar halaman, Contact dianggap aktif walau tidak sampai ke atas layar
+            if (window.innerHeight + window.scrollY >= document.documentElement.scrollHeight - 4) current = 'contact';
             setActiveSection(current);
         };
 
-        window.addEventListener('scroll', handleScroll);
+        handleScroll();
+        window.addEventListener('scroll', handleScroll, { passive: true });
         return () => window.removeEventListener('scroll', handleScroll);
     }, []);
 

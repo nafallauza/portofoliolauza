@@ -1,0 +1,16 @@
+name: Supabase keep-alive
+
+# Free-plan Supabase pauses after 7 days without DB activity; one read a day prevents it.
+on:
+  schedule:
+    - cron: "0 1 * * *" # 08:00 WIB
+  workflow_dispatch:
+
+jobs:
+  ping:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Read one row from projects
+        run: |
+          curl -sSf "${{ secrets.SUPABASE_URL }}/rest/v1/projects?select=id&limit=1" \
+            -H "apikey: ${{ secrets.SUPABASE_ANON_KEY }}"

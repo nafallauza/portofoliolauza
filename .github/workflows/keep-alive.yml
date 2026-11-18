@@ -12,5 +12,8 @@ jobs:
     steps:
       - name: Read one row from projects
         run: |
-          curl -sSf "${{ secrets.SUPABASE_URL }}/rest/v1/projects?select=id&limit=1" \
-            -H "apikey: ${{ secrets.SUPABASE_ANON_KEY }}"
+          code=$(curl -sS -o body.txt -w '%{http_code}' \
+            "${{ secrets.SUPABASE_URL }}/rest/v1/projects?select=id&limit=1" \
+            -H "apikey: ${{ secrets.SUPABASE_ANON_KEY }}")
+          cat body.txt; echo; echo "HTTP $code"
+          [ "$code" = 200 ]

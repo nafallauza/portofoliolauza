@@ -1,6 +1,7 @@
 import React from 'react';
 
-const nav = [['About', '#about'], ['Projects', '#projects'], ['Experience', '#experience'], ['Contact', '#contact']];
+// Pakai /#… supaya tetap jalan dari halaman /work/<layanan>
+const nav = [['About', '/#about'], ['Services', '/#projects'], ['Experience', '/#experience'], ['Contact', '/#contact']];
 const social = [
     ['GitHub', 'https://github.com/nafallauza'],
     ['LinkedIn', 'https://www.linkedin.com/in/nafal-lauza-83a579275/'],
@@ -36,7 +37,7 @@ export default function Footer() {
             <div className="footer-bottom">
                 <span>© {new Date().getFullYear()} Nafal Lauza</span>
                 <span>Yogyakarta, Indonesia</span>
-                <a href="#home">Back to top ↑</a>
+                <a href="#">Back to top ↑</a>
             </div>
         </footer>
     );

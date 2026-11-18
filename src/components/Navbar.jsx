@@ -14,9 +14,10 @@ export default function Navbar() {
             }
 
             // Hanya section utama yang punya id; section di dalam komponen (grafik GitHub) diabaikan
-            let current = 'home';
+            // Di halaman /work/<layanan>, menu Services yang menyala
+            let current = window.location.pathname.startsWith('/work/') ? 'projects' : 'home';
             document.querySelectorAll('main > section[id]').forEach(section => {
-                if (section.getBoundingClientRect().top <= 150) current = section.id;
+                if (section.getBoundingClientRect().top <= 150) current = section.id === 'work' ? 'projects' : section.id;
             });
             // Di dasar halaman, Contact dianggap aktif walau tidak sampai ke atas layar
             if (window.innerHeight + window.scrollY >= document.documentElement.scrollHeight - 4) current = 'contact';
@@ -31,6 +32,11 @@ export default function Navbar() {
     const scrollToSection = (id) => {
         setMobileActive(false);
         const section = document.getElementById(id);
+        // Section tidak ada di halaman ini (mis. /work/website): pindah ke halaman utama
+        if (!section) {
+            window.location.href = `/#${id}`;
+            return;
+        }
         if (section) {
             const navHeight = 90;
             const targetPosition = section.getBoundingClientRect().top + window.pageYOffset - navHeight;
@@ -75,7 +81,7 @@ export default function Navbar() {
                             className={activeSection === 'projects' ? 'active' : ''} 
                             onClick={(e) => { e.preventDefault(); scrollToSection('projects'); }}
                         >
-                            Projects
+                            Services
                         </a>
                     </li>
                     <li>

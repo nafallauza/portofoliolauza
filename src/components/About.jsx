@@ -108,6 +108,7 @@ export default function About() {
                     <div className="about-skyline reveal">
                         <ContributionSkyline
                             data={contributions}
+                            defaultView="2d"
                             palette={orangePalette}
                             footer={
                                 <a href={`https://github.com/${GITHUB_USER}`} target="_blank" rel="noreferrer">

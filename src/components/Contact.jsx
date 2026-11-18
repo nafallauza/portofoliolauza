@@ -90,7 +90,7 @@ export default function Contact() {
                 {/* Right side: Contact Form */}
                 <div className="contact-form-container">
                     <div className="contact-form-header">
-                        <span className="section-index">04</span>
+                        <span className="section-index">05</span>
                         <h3 className="contact-form-title">Let's create something together</h3>
                         <div className="contact-socials">
                             <a href="https://www.linkedin.com/in/nafal-lauza-83a579275/" target="_blank" rel="noreferrer" aria-label="LinkedIn">

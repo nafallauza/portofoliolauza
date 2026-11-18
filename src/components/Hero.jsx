@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import lauzaImg from '../assets/lauza_hero.webp';
 import SideRays from './SideRays';
-import { projectCount } from './Projects';
+import { projectCount } from '../data/projects';
 
 const roles = ['Full-stack Developer', 'Video Editor'];
 
@@ -87,7 +87,9 @@ export default function Hero() {
 
                 {/* Person Cutout Avatar Layer (z-index 3 - pops out in front of text!) */}
                 <div className="hero-avatar-wrapper reveal-fade revealed">
-                    <img src={lauzaImg} alt="Lauza" className="hero-avatar" />
+                    <span className="hero-avatar-frame">
+                        <img src={lauzaImg} alt="Lauza" className="hero-avatar" />
+                    </span>
                 </div>
 
                 {/* Floating Info Cards Wrapper */}

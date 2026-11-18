@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { Suspense, lazy, useEffect } from 'react';
 import Navbar from './components/Navbar';
 import Hero from './components/Hero';
 import About from './components/About';
@@ -10,6 +10,9 @@ import Footer from './components/Footer';
 
 // Link /work/<layanan> membuka halaman kategori; selain itu halaman utama
 const workSlug = window.location.pathname.match(/^\/work\/(website|uiux|video)\/?$/)?.[1];
+// Admin dimuat terpisah supaya pengunjung biasa tidak ikut mengunduh kodenya
+const isAdmin = /^\/admin\/?$/.test(window.location.pathname);
+const AdminPage = lazy(() => import('./admin/AdminPage'));
 
 export default function App() {
     useEffect(() => {
@@ -36,6 +39,8 @@ export default function App() {
 
         return () => revealObserver.disconnect();
     }, []);
+
+    if (isAdmin) return <Suspense fallback={null}><AdminPage /></Suspense>;
 
     return (
         <ClickSpark sparkColor="#ff7a30" sparkSize={12} sparkRadius={20} sparkCount={10} duration={500}>

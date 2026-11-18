@@ -1,5 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { projects, certificates, services, WHATSAPP_URL } from '../data/projects';
+import { services, WHATSAPP_URL } from '../data/projects';
+import { useItems } from '../lib/useItems';
 
 // Project unggulan di tumpukan; sisanya dibuka lewat tombol
 const FEATURED_LIMIT = 3;
@@ -198,6 +199,39 @@ function CertificateViewer({ certificates, onSelect }) {
     );
 }
 
+// Video YouTube (kalau ada, selain kategori video) lalu foto-foto; strip thumbnail kalau lebih dari satu
+function ModalMedia({ item }) {
+    const media = [
+        ...(item.youtubeId && item.category !== 'video' ? [{ youtubeId: item.youtubeId }] : []),
+        ...(item.images.length ? item.images : [item.imageSrc]).map((src) => ({ src })),
+    ];
+    const [active, setActive] = useState(0);
+    const current = media[active];
+    return (
+        <div className={`pm-media ${item.category === 'certificate' ? 'is-certificate' : ''}`}>
+            {current.youtubeId ? (
+                <iframe
+                    src={`https://www.youtube-nocookie.com/embed/${current.youtubeId}?rel=0`}
+                    title={item.title}
+                    allow="encrypted-media; picture-in-picture"
+                    allowFullScreen
+                />
+            ) : (
+                <img src={current.src} alt={item.title} />
+            )}
+            {media.length > 1 && (
+                <div className="pm-thumbs">
+                    {media.map((m, i) => (
+                        <button key={m.youtubeId ?? m.src} type="button" className={i === active ? 'is-active' : undefined} onClick={() => setActive(i)} aria-label={m.youtubeId ? 'Play video' : `Photo ${i + 1}`}>
+                            <img src={m.src ?? `https://i.ytimg.com/vi/${m.youtubeId}/hqdefault.jpg`} alt="" loading="lazy" />
+                        </button>
+                    ))}
+                </div>
+            )}
+        </div>
+    );
+}
+
 function ProjectModal({ items, index, onChange, onClose }) {
     const item = items[index];
     const go = (step) => onChange((index + step + items.length) % items.length);
@@ -237,9 +271,7 @@ function ProjectModal({ items, index, onChange, onClose }) {
                 </div>
 
                 <div className="pm-body" key={item.id}>
-                    <div className={`pm-media ${item.category === 'certificate' ? 'is-certificate' : ''}`}>
-                        <img src={item.imageSrc} alt={item.title} />
-                    </div>
+                    <ModalMedia item={item} />
                     <div className="pm-details">
                         <span className="pm-label">{item.categoryLabel}</span>
                         <h2>{item.title}</h2>
@@ -271,10 +303,13 @@ function useModal(items) {
     return [(item) => setIndex(items.indexOf(item)), modal];
 }
 
-const byService = (slug) => projects.filter((p) => p.category === slug);
+const byService = (projects, slug) => projects.filter((p) => p.category === slug);
+
+const LOAD_ERROR = "Couldn't load this section. Please refresh the page.";
 
 // Halaman utama: daftar layanan, tiap baris menuju /work/<slug>
 export default function Projects() {
+    const { projects, status } = useItems();
     return (
         <section id="projects" className="projects-section">
             <div className="section-head reveal">
@@ -287,7 +322,7 @@ export default function Projects() {
 
             <ol className="service-list">
                 {services.map((svc, i) => {
-                    const items = byService(svc.slug);
+                    const items = byService(projects, svc.slug);
                     return (
                         <li key={svc.slug}>
                             <a className="service-row reveal" href={`/work/${svc.slug}`}>
@@ -303,7 +338,7 @@ export default function Projects() {
                                     {items.slice(0, 3).map((p) => <img key={p.id} src={p.imageSrc} alt="" loading="lazy" />)}
                                 </span>
                                 <span className="service-meta">
-                                    <span>{items.length ? `${items.length} ${items.length === 1 ? 'project' : 'projects'}` : 'Coming soon'}</span>
+                                    <span>{status !== 'ready' ? '' : items.length ? `${items.length} ${items.length === 1 ? 'project' : 'projects'}` : 'Coming soon'}</span>
                                     <span className="service-arrow"><Icon d={ARROW_UP_RIGHT} size={20} /></span>
                                 </span>
                             </a>
@@ -311,11 +346,13 @@ export default function Projects() {
                     );
                 })}
             </ol>
+            {status === 'error' && <p className="load-note">{LOAD_ERROR}</p>}
         </section>
     );
 }
 
 export function Certificates() {
+    const { certificates, status } = useItems();
     const [select, modal] = useModal(certificates);
     return (
         <section id="certificates" className="projects-section">
@@ -326,7 +363,11 @@ export function Certificates() {
                     <p className="section-lead">Courses and programs I've completed.</p>
                 </div>
             </div>
-            <CertificateViewer certificates={certificates} onSelect={select} />
+            {certificates.length > 0 ? (
+                <CertificateViewer certificates={certificates} onSelect={select} />
+            ) : (
+                <p className="load-note">{status === 'error' ? LOAD_ERROR : status === 'loading' ? 'Loading…' : 'No certificates yet.'}</p>
+            )}
             {modal}
         </section>
     );
@@ -365,7 +406,8 @@ function VideoGrid({ videos }) {
 // Halaman kategori yang linknya dikirim ke calon klien: /work/website, /work/uiux, /work/video
 export function WorkPage({ slug }) {
     const svc = services.find((x) => x.slug === slug);
-    const items = byService(slug);
+    const { projects, status } = useItems();
+    const items = byService(projects, slug);
     const [select, modal] = useModal(items);
 
     useEffect(() => {
@@ -384,7 +426,7 @@ export function WorkPage({ slug }) {
                             {services.map((x) => (
                                 <a key={x.slug} href={`/work/${x.slug}`} className={x.slug === slug ? 'is-active' : undefined} aria-current={x.slug === slug ? 'page' : undefined}>
                                     {x.title}
-                                    <span>{byService(x.slug).length}</span>
+                                    <span>{status === 'ready' ? byService(projects, x.slug).length : ''}</span>
                                 </a>
                             ))}
                         </nav>
@@ -397,7 +439,9 @@ export function WorkPage({ slug }) {
                         </span>
                     </div>
 
-                    {items.length === 0 ? (
+                    {status !== 'ready' ? (
+                        <p className="load-note">{status === 'error' ? LOAD_ERROR : 'Loading…'}</p>
+                    ) : items.length === 0 ? (
                         <div className="work-empty reveal">
                             <p className="work-empty-title">Samples are on the way</p>
                             <p className="section-lead">I'm putting this page together. Message me and I'll send examples straight to your WhatsApp.</p>

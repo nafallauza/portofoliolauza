@@ -4,7 +4,9 @@ import { rowToItem } from './items';
 
 // One request per page load, shared by Hero, Projects and Certificates
 let request;
-const loadItems = () => (request ??= supabase
+const loadItems = () => (request ??= !supabase
+    ? Promise.reject(new Error('Supabase env is not set'))
+    : supabase
     .from('projects')
     .select('*')
     .order('sort_order')

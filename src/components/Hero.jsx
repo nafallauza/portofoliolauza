@@ -1,11 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import lauzaImg from '../assets/lauza_hero.webp';
 import SideRays from './SideRays';
-import { projectCount } from '../data/projects';
+import { useItems } from '../lib/useItems';
 
 const roles = ['Full-stack Developer', 'Video Editor'];
 
 export default function Hero() {
+    const { projects, status } = useItems();
     const [activeTarget, setActiveTarget] = useState('#projects');
     const [roleIndex, setRoleIndex] = useState(0);
     const [currentText, setCurrentText] = useState('');
@@ -101,7 +102,7 @@ export default function Hero() {
                     </div>
 
                     <div className="floating-card float-right reveal-fade revealed">
-                        <div className="stats-num">{projectCount}</div>
+                        <div className="stats-num">{status === 'ready' ? projects.length : '–'}</div>
                         <div className="stats-label">Projects<br />Built</div>
                     </div>
                 </div>

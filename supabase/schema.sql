@@ -37,3 +37,22 @@ create policy "admin update" on storage.objects for update to authenticated usin
 create policy "admin delete" on storage.objects for delete to authenticated using (bucket_id = 'portfolio');
 -- remove() also needs select on the objects
 create policy "admin read" on storage.objects for select to authenticated using (bucket_id = 'portfolio');
+
+-- Contact messages (public insert with basic validation; admin reads & manages in /admin)
+create table if not exists public.messages (
+  id bigint generated always as identity primary key,
+  name text not null check (length(trim(name)) between 1 and 120),
+  email text not null check (length(trim(email)) between 3 and 180),
+  subject text not null default '',
+  message text not null check (length(trim(message)) between 1 and 4000),
+  read boolean not null default false,
+  created_at timestamptz default now()
+);
+
+alter table public.messages enable row level security;
+
+create policy "public send message" on public.messages for insert to anon with check (true);
+create policy "admin manage messages" on public.messages for all to authenticated using (true) with check (true);
+
+grant insert on public.messages to anon;
+grant select, update, delete on public.messages to authenticated;

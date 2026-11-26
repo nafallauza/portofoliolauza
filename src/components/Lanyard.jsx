@@ -1,6 +1,6 @@
 /* eslint-disable react/no-unknown-property */
 'use client';
-import { useEffect, useMemo, useRef, useState, Suspense } from 'react';
+import { memo, useEffect, useMemo, useRef, useState, Suspense } from 'react';
 import { Canvas, extend, useFrame } from '@react-three/fiber';
 import { useGLTF, useTexture, Environment, Lightformer } from '@react-three/drei';
 import { BallCollider, CuboidCollider, Physics, RigidBody, useRopeJoint, useSphericalJoint } from '@react-three/rapier';
@@ -27,6 +27,41 @@ const BLANK_PIXEL =
 const FRONT_UV_RECT = { x: 0, y: 0, w: 0.5, h: 0.755 };
 const BACK_UV_RECT = { x: 0.5, y: 0, w: 0.5, h: 0.757 };
 
+const LanyardEnv = memo(function LanyardEnv() {
+  return (
+    <Environment resolution={64} frames={1} blur={0.75}>
+      <Lightformer
+        intensity={2}
+        color="white"
+        position={[0, -1, 5]}
+        rotation={[0, 0, Math.PI / 3]}
+        scale={[100, 0.1, 1]}
+      />
+      <Lightformer
+        intensity={3}
+        color="white"
+        position={[-1, -1, 1]}
+        rotation={[0, 0, Math.PI / 3]}
+        scale={[100, 0.1, 1]}
+      />
+      <Lightformer
+        intensity={3}
+        color="white"
+        position={[1, 1, 1]}
+        rotation={[0, 0, Math.PI / 3]}
+        scale={[100, 0.1, 1]}
+      />
+      <Lightformer
+        intensity={10}
+        color="white"
+        position={[-10, 0, 14]}
+        rotation={[0, Math.PI / 2, Math.PI / 3]}
+        scale={[100, 10, 1]}
+      />
+    </Environment>
+  );
+});
+
 export default function Lanyard({
   position = [0, 0, 20],
   gravity = [0, -40, 0],
@@ -36,7 +71,8 @@ export default function Lanyard({
   backImage = null,
   imageFit = 'cover',
   lanyardImage = null,
-  lanyardWidth = 1
+  lanyardWidth = 1,
+  paused = false
 }) {
   const [isMobile, setIsMobile] = useState(() => typeof window !== 'undefined' && window.innerWidth < 768);
 
@@ -49,6 +85,7 @@ export default function Lanyard({
   return (
     <div className="lanyard-wrapper">
       <Canvas
+        frameloop={paused ? 'never' : 'always'}
         camera={{ position: position, fov: fov }}
         dpr={[1, 1]}
         gl={{ alpha: transparent, powerPreference: 'high-performance' }}
@@ -56,7 +93,7 @@ export default function Lanyard({
       >
         <ambientLight intensity={Math.PI} />
         <Suspense fallback={null}>
-          <Physics gravity={gravity} timeStep={1 / 30}>
+          <Physics gravity={gravity} timeStep={1 / 30} paused={paused}>
             <Band
               isMobile={isMobile}
               frontImage={frontImage}
@@ -66,36 +103,7 @@ export default function Lanyard({
               lanyardWidth={lanyardWidth}
             />
           </Physics>
-          <Environment blur={0.75}>
-            <Lightformer
-              intensity={2}
-              color="white"
-              position={[0, -1, 5]}
-              rotation={[0, 0, Math.PI / 3]}
-              scale={[100, 0.1, 1]}
-            />
-            <Lightformer
-              intensity={3}
-              color="white"
-              position={[-1, -1, 1]}
-              rotation={[0, 0, Math.PI / 3]}
-              scale={[100, 0.1, 1]}
-            />
-            <Lightformer
-              intensity={3}
-              color="white"
-              position={[1, 1, 1]}
-              rotation={[0, 0, Math.PI / 3]}
-              scale={[100, 0.1, 1]}
-            />
-            <Lightformer
-              intensity={10}
-              color="white"
-              position={[-10, 0, 14]}
-              rotation={[0, Math.PI / 2, Math.PI / 3]}
-              scale={[100, 10, 1]}
-            />
-          </Environment>
+          <LanyardEnv />
         </Suspense>
       </Canvas>
     </div>

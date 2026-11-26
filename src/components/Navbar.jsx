@@ -1,6 +1,15 @@
 import React, { useState, useEffect } from 'react';
 
-export default function Navbar() {
+const CatIcon = () => (
+    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+        <path d="M5 10V4l4 3h6l4-3v6a7 7 0 0 1-14 0Z" />
+        <circle cx="9.5" cy="12" r="0.8" fill="currentColor" />
+        <circle cx="14.5" cy="12" r="0.8" fill="currentColor" />
+        <path d="M10.5 15c.9.7 2.1.7 3 0" />
+    </svg>
+);
+
+export default function Navbar({ onEnterGame }) {
     const [scrolled, setScrolled] = useState(false);
     const [mobileActive, setMobileActive] = useState(false);
     const [activeSection, setActiveSection] = useState('home');
@@ -102,9 +111,27 @@ export default function Navbar() {
                             Contact
                         </a>
                     </li>
+                    {onEnterGame && (
+                        <li className="mobile-game-item">
+                            <button
+                                type="button"
+                                className="btn-game-mode"
+                                onClick={() => { setMobileActive(false); onEnterGame(); }}
+                            >
+                                <CatIcon />
+                                <span>3D Cat House</span>
+                            </button>
+                        </li>
+                    )}
                 </ul>
 
                 <div className="nav-cta">
+                    {onEnterGame && (
+                        <button type="button" className="btn-game-mode" onClick={onEnterGame}>
+                            <CatIcon />
+                            <span>3D Mode</span>
+                        </button>
+                    )}
                     <a href="#contact" className="btn-talk" onClick={(e) => { e.preventDefault(); scrollToSection('contact'); }}>
                         Let's Talk
                     </a>

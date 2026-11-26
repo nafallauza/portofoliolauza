@@ -1,8 +1,10 @@
 import React, { useState, useRef, useEffect, Component, lazy, Suspense } from 'react';
 
-// three.js + rapier hanya dimuat saat section contact mendekati viewport
+// Lightweight procedural 3D lanyard loaded only when Contact approaches viewport
 const Lanyard = lazy(() => import('./Lanyard'));
 import lauzaLanyardImg from '../assets/lauza_lanyard.jpg';
+import { CONTACT_EMAIL, WHATSAPP_URL } from '../data/projects';
+import { supabase } from '../lib/supabase';
 
 class LanyardErrorBoundary extends Component {
     constructor(props) {
@@ -24,24 +26,25 @@ class LanyardErrorBoundary extends Component {
 }
 
 export default function Contact() {
-    const [status, setStatus] = useState('idle'); // 'idle', 'submitting', 'success'
+    const [status, setStatus] = useState('idle'); // 'idle' | 'submitting' | 'success' | 'fallback'
+    const [errorMsg, setErrorMsg] = useState('');
     const [formValues, setFormValues] = useState({
         name: '',
         email: '',
         subject: '',
-        message: ''
+        message: '',
+        website: '', // hidden anti-spam honeypot
     });
     const lanyardRef = useRef(null);
-    const [isInView, setIsInView] = useState(false);
+    const [hasLoaded, setHasLoaded] = useState(false);
+    const [isVisible, setIsVisible] = useState(false);
 
     useEffect(() => {
         if (!lanyardRef.current) return;
         const observer = new IntersectionObserver(([entry]) => {
-            if (entry.isIntersecting) {
-                setIsInView(true);
-                observer.disconnect();
-            }
-        }, { rootMargin: '400px' });
+            if (entry.isIntersecting) setHasLoaded(true);
+            setIsVisible(entry.isIntersecting);
+        }, { rootMargin: '300px' });
         observer.observe(lanyardRef.current);
         return () => observer.disconnect();
     }, []);
@@ -51,18 +54,43 @@ export default function Contact() {
         setFormValues(prev => ({ ...prev, [id]: value }));
     };
 
-    const handleSubmit = (e) => {
-        e.preventDefault();
-        
+    const buildMailtoHref = () => {
         const { name, email, subject, message } = formValues;
-        const mailtoLink = `mailto:nafallauza@gmail.com?subject=${encodeURIComponent(subject || 'New Contact Request')}&body=${encodeURIComponent(`Name: ${name}\nEmail: ${email}\n\nMessage:\n${message}`)}`;
-        window.location.href = mailtoLink;
-        
-        setStatus('submitting');
-        setTimeout(() => {
+        return `mailto:${CONTACT_EMAIL}?subject=${encodeURIComponent(subject || 'New Contact Request')}&body=${encodeURIComponent(`Name: ${name}\nEmail: ${email}\n\nMessage:\n${message}`)}`;
+    };
+
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+        // Honeypot tripped -> silently pretend success to bots
+        if (formValues.website.trim()) {
             setStatus('success');
-            setFormValues({ name: '', email: '', subject: '', message: '' });
-        }, 1500);
+            return;
+        }
+
+        const payload = {
+            name: formValues.name.trim(),
+            email: formValues.email.trim(),
+            subject: formValues.subject.trim(),
+            message: formValues.message.trim(),
+        };
+        if (!payload.name || !payload.email || !payload.message) return;
+
+        setStatus('submitting');
+        setErrorMsg('');
+
+        if (supabase) {
+            const { error } = await supabase.from('messages').insert([payload]);
+            if (!error) {
+                setStatus('success');
+                setFormValues({ name: '', email: '', subject: '', message: '', website: '' });
+                return;
+            }
+            setErrorMsg('Direct inbox is temporarily unavailable — send instantly via Email or WhatsApp below.');
+        } else {
+            setErrorMsg('Direct inbox is offline — send via Email or WhatsApp below.');
+        }
+        // Honest fallback: never fake success when DB insert fails
+        setStatus('fallback');
     };
 
     return (
@@ -70,7 +98,7 @@ export default function Contact() {
             <div className="contact-card reveal">
                 {/* Left side: Interactive 3D Lanyard Card */}
                 <div className="contact-lanyard-container" ref={lanyardRef}>
-                    {isInView && (
+                    {hasLoaded && (
                         <LanyardErrorBoundary fallback={
                             <div className="lanyard-fallback" style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100%', width: '100%' }}>
                                 <img src={lauzaLanyardImg} alt="Lauza" style={{ maxWidth: '280px', maxHeight: '420px', borderRadius: '24px', objectFit: 'cover', boxShadow: '0 20px 40px rgba(0,0,0,0.6)', border: '1px solid rgba(255,255,255,0.1)' }} />
@@ -81,6 +109,7 @@ export default function Contact() {
                                     position={[0, 0, 17.5]} 
                                     gravity={[0, -40, 0]} 
                                     frontImage={lauzaLanyardImg} 
+                                    paused={!isVisible}
                                 />
                             </Suspense>
                         </LanyardErrorBoundary>
@@ -117,6 +146,17 @@ export default function Contact() {
                     </div>
                     {status !== 'success' ? (
                         <form id="contact-form" className="contact-form" onSubmit={handleSubmit}>
+                            {/* Hidden honeypot against form bots */}
+                            <input
+                                type="text"
+                                id="website"
+                                tabIndex={-1}
+                                autoComplete="off"
+                                value={formValues.website}
+                                onChange={handleInputChange}
+                                style={{ position: 'absolute', left: '-9999px', width: 1, height: 1, opacity: 0 }}
+                                aria-hidden="true"
+                            />
                             <div className="form-row">
                                 <div className="form-group">
                                     <label htmlFor="name">Your Name</label>
@@ -167,6 +207,19 @@ export default function Contact() {
                                     disabled={status === 'submitting'}
                                 ></textarea>
                             </div>
+                            {status === 'fallback' && (
+                                <div className="form-fallback-box" role="alert">
+                                    <p>{errorMsg}</p>
+                                    <div className="form-fallback-actions">
+                                        <a href={buildMailtoHref()} className="form-fallback-link is-primary">
+                                            Open Email App ↗
+                                        </a>
+                                        <a href={WHATSAPP_URL} target="_blank" rel="noreferrer" className="form-fallback-link">
+                                            Chat on WhatsApp ↗
+                                        </a>
+                                    </div>
+                                </div>
+                            )}
                             <button type="submit" className="btn-submit" disabled={status === 'submitting'}>
                                 <span>{status === 'submitting' ? 'Sending...' : 'Send Message'}</span>
                                 <span className="send-arrow" style={{ transform: status === 'submitting' ? 'translateX(5px)' : 'none' }}>→</span>

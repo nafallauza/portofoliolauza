@@ -1,28 +1,5 @@
 import React from 'react';
-
-const experienceData = [
-    {
-        id: 1,
-        date: 'Jan 2026 – Present',
-        title: 'Video Editor, Designer & Live Stream Operator',
-        company: 'ABP Startup Incubator (Amikom Business Park)',
-        desc: 'Edit documentation and promotional videos, design social media visuals with the marketing team, and run live streams with OBS Studio and operate cameras during incubator events.'
-    },
-    {
-        id: 2,
-        date: '2026 - Present',
-        title: 'Freelance Video Clipper',
-        company: 'Self-employed',
-        desc: 'Editing short-form video content for TikTok, Reels, and Shorts. Optimizing viewer retention through engaging cuts, subtitles, transitions, and trend-aware background music.'
-    },
-    {
-        id: 3,
-        date: 'Oct – Dec 2024',
-        title: 'Full-stack Web Developer (Intern)',
-        company: 'PT GIT Solution',
-        desc: 'Designed website interfaces in Figma, from wireframes to high-fidelity UI, then built them into working frontend pages with HTML, CSS and React.'
-    }
-];
+import { EXPERIENCE_DATA } from '../data/projects';
 
 export default function Experience() {
     return (
@@ -34,13 +11,20 @@ export default function Experience() {
             </div>
 
             <div className="xp-list">
-                {experienceData.map(item => (
+                {EXPERIENCE_DATA.map(item => (
                     <article key={item.id} className="xp-row reveal">
                         <span className="xp-date">{item.date}</span>
                         <div className="xp-body">
                             <h3>{item.title}</h3>
                             <p className="xp-company">{item.company}</p>
                             <p className="xp-desc">{item.desc}</p>
+                            {item.highlights?.length > 0 && (
+                                <div className="xp-tags">
+                                    {item.highlights.map((tag) => (
+                                        <span key={tag} className="xp-tag">{tag}</span>
+                                    ))}
+                                </div>
+                            )}
                         </div>
                     </article>
                 ))}

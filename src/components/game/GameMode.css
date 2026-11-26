@@ -1,0 +1,1094 @@
+.game-shell {
+    position: fixed;
+    inset: 0;
+    z-index: 200;
+    background: #dfe8f0;
+    color: #18181b;
+    font-family: var(--font-body);
+    overflow: hidden;
+    user-select: none;
+    -webkit-user-select: none;
+}
+
+.game-canvas-wrap {
+    position: absolute;
+    inset: 0;
+}
+
+/* Shared architectural frosted porcelain surface (no live WebGL backdrop blur stalls) */
+.hud-surface {
+    background: rgba(255, 255, 255, 0.93);
+    border: 1px solid rgba(15, 23, 42, 0.09);
+    box-shadow: 0 4px 18px rgba(15, 23, 42, 0.06);
+}
+
+/* Top Minimalist Navbar */
+.game-hud-top {
+    position: absolute;
+    top: 16px;
+    left: 16px;
+    right: 16px;
+    z-index: 20;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    pointer-events: none;
+}
+
+.game-hud-group {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    pointer-events: auto;
+}
+
+.hud-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    height: 36px;
+    padding: 0 12px;
+    border-radius: 10px;
+    color: #18181b;
+    font-size: 12.5px;
+    font-weight: 500;
+    letter-spacing: -0.01em;
+    white-space: nowrap;
+    flex-shrink: 0;
+    transition: background-color 0.18s ease, color 0.18s ease, border-color 0.18s ease;
+}
+
+.hud-btn:hover {
+    background: rgba(255, 255, 255, 0.94);
+    border-color: rgba(15, 23, 42, 0.14);
+}
+
+.hud-loc {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    height: 36px;
+    padding: 0 12px;
+    border-radius: 10px;
+    font-size: 12px;
+    font-weight: 500;
+    color: #52525b;
+    white-space: nowrap;
+}
+
+.hud-loc-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: #ff7a30;
+}
+
+.hud-loc.is-outside .hud-loc-dot {
+    background: #22c55e;
+}
+
+/* Center Room Tabs Dock */
+.game-rooms-bar {
+    display: inline-flex;
+    align-items: center;
+    gap: 2px;
+    height: 36px;
+    padding: 3px;
+    border-radius: 10px;
+    pointer-events: auto;
+}
+
+.game-room-chip {
+    display: inline-flex;
+    align-items: center;
+    height: 28px;
+    padding: 0 11px;
+    border-radius: 7px;
+    font-size: 12px;
+    font-weight: 500;
+    color: #52525b;
+    white-space: nowrap;
+    transition: background-color 0.16s ease, color 0.16s ease;
+}
+
+.game-room-chip:hover {
+    color: #18181b;
+    background: rgba(15, 23, 42, 0.05);
+}
+
+.game-room-chip.active {
+    background: #18181b;
+    color: #ffffff;
+}
+
+/* Right Unified Utility Dock (Play | View | Treats | Sound) */
+.hud-utility-dock {
+    display: inline-flex;
+    align-items: center;
+    height: 36px;
+    padding: 3px;
+    border-radius: 10px;
+    pointer-events: auto;
+}
+
+.hud-seg {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    height: 28px;
+    padding: 0 10px;
+    border-radius: 7px;
+    font-size: 12px;
+    font-weight: 500;
+    color: #27272a;
+    white-space: nowrap;
+    font-variant-numeric: tabular-nums;
+    transition: background-color 0.16s ease, color 0.16s ease;
+}
+
+.hud-seg:hover {
+    background: rgba(15, 23, 42, 0.06);
+}
+
+.hud-seg.is-primary {
+    background: #ff7a30;
+    color: #ffffff;
+    font-weight: 600;
+}
+
+.hud-seg.is-primary:hover {
+    background: #ea6a22;
+}
+
+.hud-seg.is-active {
+    background: #18181b;
+    color: #ffffff;
+}
+
+.hud-seg.is-stat {
+    cursor: default;
+    color: #3f3f46;
+}
+
+.hud-seg.is-stat:hover {
+    background: transparent;
+}
+
+.hud-seg.is-stat.zoomies {
+    color: #c2410c;
+    font-weight: 600;
+}
+
+.hud-seg.is-icon {
+    width: 28px;
+    padding: 0;
+    justify-content: center;
+}
+
+.hud-divider {
+    width: 1px;
+    height: 16px;
+    margin: 0 2px;
+    background: rgba(15, 23, 42, 0.1);
+    flex-shrink: 0;
+}
+
+/* Live Toy Mouse Chase Arcade Scoreboard (clean minimalist bar) */
+.game-arcade-bar {
+    display: inline-flex;
+    align-items: center;
+    gap: 12px;
+    height: 36px;
+    padding: 3px 4px 3px 14px;
+    border-radius: 10px;
+    pointer-events: auto;
+    font-size: 12.5px;
+    white-space: nowrap;
+    font-variant-numeric: tabular-nums;
+}
+
+.arcade-timer {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    font-family: var(--font-mono);
+    font-weight: 700;
+    color: #18181b;
+}
+
+.arcade-timer.low {
+    color: #dc2626;
+}
+
+.arcade-stat {
+    color: #71717a;
+}
+
+.arcade-stat strong {
+    color: #18181b;
+    font-family: var(--font-mono);
+    margin-left: 4px;
+}
+
+.arcade-combo {
+    padding: 2px 7px;
+    border-radius: 6px;
+    background: #ff7a30;
+    color: #ffffff;
+    font-family: var(--font-mono);
+    font-size: 11px;
+    font-weight: 700;
+}
+
+.arcade-stop-btn {
+    height: 28px;
+    padding: 0 11px;
+    border-radius: 7px;
+    background: rgba(15, 23, 42, 0.07);
+    color: #27272a;
+    font-size: 12px;
+    font-weight: 600;
+}
+
+.arcade-stop-btn:hover {
+    background: rgba(220, 38, 38, 0.12);
+    color: #b91c1c;
+}
+
+/* Floating 3D Speech Bubbles */
+.cat-speech-bubble {
+    padding: 4px 10px;
+    border-radius: 8px;
+    background: rgba(255, 255, 255, 0.96);
+    border: 1px solid rgba(15, 23, 42, 0.08);
+    color: #18181b;
+    font-family: var(--font-body);
+    font-size: 11.5px;
+    font-weight: 600;
+    white-space: nowrap;
+    box-shadow: 0 4px 14px rgba(15, 23, 42, 0.14);
+    pointer-events: none;
+}
+
+.lauza-speech-bubble {
+    background: #18181b;
+    color: #ffffff;
+    border-color: rgba(255, 255, 255, 0.12);
+}
+
+.lauza-interact-tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 4px 10px 4px 6px;
+    border-radius: 8px;
+    background: rgba(255, 255, 255, 0.94);
+    border: 1px solid rgba(15, 23, 42, 0.12);
+    color: #18181b;
+    font-family: var(--font-body);
+    font-size: 11.5px;
+    font-weight: 600;
+    white-space: nowrap;
+    box-shadow: 0 4px 16px rgba(15, 23, 42, 0.14);
+    cursor: pointer;
+}
+
+.lauza-interact-tag kbd {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 18px;
+    height: 18px;
+    border-radius: 4px;
+    background: #ff7a30;
+    color: #ffffff;
+    font-family: var(--font-mono);
+    font-size: 10.5px;
+    font-weight: 700;
+}
+
+/* Subtle Architectural Toast */
+.game-toast {
+    position: absolute;
+    top: 62px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 25;
+    padding: 7px 14px;
+    border-radius: 9px;
+    color: #27272a;
+    font-size: 12px;
+    font-weight: 500;
+    pointer-events: none;
+    white-space: nowrap;
+}
+
+/* Bottom Proximity Action Card */
+.game-zone-prompt {
+    position: absolute;
+    bottom: 62px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 22;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 8px 8px 8px 14px;
+    border-radius: 12px;
+}
+
+.game-zone-meta {
+    display: flex;
+    flex-direction: column;
+    line-height: 1.25;
+}
+
+.game-zone-title {
+    font-family: var(--font-header);
+    font-size: 13.5px;
+    font-weight: 700;
+    color: #18181b;
+}
+
+.game-zone-sub {
+    font-size: 11.5px;
+    color: #71717a;
+}
+
+.game-prompt-actions {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.game-zone-open-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    height: 34px;
+    padding: 0 14px;
+    border-radius: 8px;
+    background: #18181b;
+    color: #ffffff;
+    font-size: 12.5px;
+    font-weight: 600;
+    white-space: nowrap;
+    transition: background-color 0.18s ease;
+}
+
+.game-zone-open-btn:hover {
+    background: #ff7a30;
+}
+
+.game-zone-open-btn kbd,
+.game-zone-sec-btn kbd {
+    padding: 1px 5px;
+    border-radius: 4px;
+    font-family: var(--font-mono);
+    font-size: 10.5px;
+    font-weight: 500;
+}
+
+.game-zone-open-btn kbd {
+    background: rgba(255, 255, 255, 0.16);
+    color: rgba(255, 255, 255, 0.9);
+}
+
+.game-zone-sec-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    height: 34px;
+    padding: 0 12px;
+    border-radius: 8px;
+    background: rgba(15, 23, 42, 0.06);
+    border: 1px solid rgba(15, 23, 42, 0.08);
+    color: #18181b;
+    font-size: 12.5px;
+    font-weight: 500;
+    white-space: nowrap;
+    transition: background-color 0.16s ease, border-color 0.16s ease;
+}
+
+.game-zone-sec-btn:hover {
+    background: rgba(255, 122, 48, 0.12);
+    border-color: rgba(255, 122, 48, 0.35);
+    color: #c2410c;
+}
+
+.game-zone-sec-btn kbd {
+    background: rgba(15, 23, 42, 0.08);
+    color: #52525b;
+}
+
+/* Whisper-quiet Desktop Keybind Legend */
+.game-controls-hint {
+    position: absolute;
+    bottom: 16px;
+    left: 16px;
+    z-index: 18;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    height: 32px;
+    padding: 0 12px;
+    border-radius: 9px;
+    font-size: 11.5px;
+    color: #52525b;
+    pointer-events: none;
+}
+
+.game-controls-hint span {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.game-controls-hint kbd {
+    padding: 1px 5px;
+    border-radius: 4px;
+    background: rgba(15, 23, 42, 0.07);
+    color: #18181b;
+    font-family: var(--font-mono);
+    font-size: 10.5px;
+    font-weight: 600;
+}
+
+/* Minimalist Light Architectural Mini-Map */
+.game-minimap {
+    position: absolute;
+    right: 16px;
+    bottom: 16px;
+    z-index: 20;
+    padding: 6px;
+    border-radius: 12px;
+}
+
+.game-minimap svg {
+    display: block;
+    border-radius: 7px;
+}
+
+.minimap-zone {
+    cursor: pointer;
+}
+
+/* Touch / Mobile Controls */
+.game-touch-controls {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 24;
+    display: none;
+    justify-content: space-between;
+    align-items: flex-end;
+    padding: 16px 18px 22px;
+    pointer-events: none;
+}
+
+.game-joystick-base {
+    position: relative;
+    width: 108px;
+    height: 108px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.88);
+    border: 1px solid rgba(15, 23, 42, 0.12);
+    box-shadow: 0 6px 20px rgba(15, 23, 42, 0.08);
+    touch-action: none;
+    pointer-events: auto;
+}
+
+.game-joystick-knob {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 44px;
+    height: 44px;
+    margin: -22px 0 0 -22px;
+    border-radius: 50%;
+    background: #18181b;
+    box-shadow: 0 4px 12px rgba(15, 23, 42, 0.25);
+    pointer-events: none;
+}
+
+.game-touch-actions {
+    display: grid;
+    grid-template-columns: repeat(2, auto);
+    gap: 8px;
+    pointer-events: auto;
+}
+
+.game-touch-btn {
+    min-width: 60px;
+    height: 46px;
+    padding: 0 14px;
+    border-radius: 12px;
+    background: rgba(255, 255, 255, 0.92);
+    border: 1px solid rgba(15, 23, 42, 0.1);
+    color: #18181b;
+    font-size: 12.5px;
+    font-weight: 600;
+    box-shadow: 0 4px 14px rgba(15, 23, 42, 0.07);
+    touch-action: none;
+}
+
+.game-touch-btn:active {
+    transform: scale(0.96);
+}
+
+.game-touch-btn.primary {
+    grid-column: span 2;
+    background: #18181b;
+    border-color: #18181b;
+    color: #ffffff;
+}
+
+/* Clean Minimalist Architectural Light Slide-Over Drawer */
+.game-drawer-backdrop {
+    position: absolute;
+    inset: 0;
+    z-index: 40;
+    background: rgba(15, 23, 42, 0.34);
+    display: flex;
+    justify-content: flex-end;
+}
+
+.game-drawer {
+    width: min(470px, 100%);
+    height: 100%;
+    background: #faf9f6;
+    border-left: 1px solid rgba(15, 23, 42, 0.08);
+    box-shadow: -12px 0 40px rgba(15, 23, 42, 0.08);
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    user-select: text;
+    -webkit-user-select: text;
+}
+
+.game-drawer-head {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 22px 24px 16px;
+    border-bottom: 1px solid rgba(15, 23, 42, 0.07);
+}
+
+.game-drawer-kicker {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: #ff7a30;
+    font-weight: 600;
+}
+
+.game-drawer-title {
+    margin-top: 4px;
+    font-family: var(--font-header);
+    font-size: 24px;
+    font-weight: 700;
+    color: #18181b;
+    line-height: 1.2;
+}
+
+.game-drawer-close {
+    width: 34px;
+    height: 34px;
+    border-radius: 9px;
+    background: rgba(15, 23, 42, 0.05);
+    color: #27272a;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+.game-drawer-close:hover {
+    background: #18181b;
+    color: #ffffff;
+}
+
+.game-drawer-body {
+    flex: 1;
+    overflow-y: auto;
+    padding: 20px 24px 28px;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+}
+
+.game-drawer-lead {
+    font-size: 16px;
+    font-weight: 600;
+    line-height: 1.45;
+    color: #18181b;
+}
+
+.game-drawer-text {
+    font-size: 13.5px;
+    line-height: 1.65;
+    color: #52525b;
+}
+
+.game-card {
+    padding: 15px 16px;
+    border-radius: 12px;
+    background: #ffffff;
+    border: 1px solid rgba(15, 23, 42, 0.07);
+    box-shadow: 0 2px 10px rgba(15, 23, 42, 0.03);
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.game-card-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+}
+
+.game-card-thumb {
+    width: 100%;
+    aspect-ratio: 16 / 9;
+    object-fit: cover;
+    border-radius: 8px;
+    background: #f4f3ef;
+}
+
+.game-card-title {
+    font-family: var(--font-header);
+    font-size: 15px;
+    font-weight: 600;
+    color: #18181b;
+}
+
+.game-card-meta {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    font-weight: 600;
+    color: #ff7a30;
+}
+
+.game-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+}
+
+.game-tag {
+    padding: 4px 10px;
+    border-radius: 6px;
+    background: #f4f3ef;
+    border: 1px solid rgba(15, 23, 42, 0.06);
+    font-size: 12px;
+    color: #3f3f46;
+}
+
+.game-tabs {
+    display: inline-flex;
+    gap: 4px;
+    padding: 3px;
+    border-radius: 9px;
+    background: rgba(15, 23, 42, 0.05);
+    width: fit-content;
+}
+
+.game-tab {
+    padding: 6px 12px;
+    border-radius: 7px;
+    color: #52525b;
+    font-size: 12px;
+    font-weight: 600;
+}
+
+.game-tab.active {
+    background: #ffffff;
+    color: #18181b;
+    box-shadow: 0 1px 4px rgba(15, 23, 42, 0.08);
+}
+
+.game-links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: 2px;
+}
+
+.game-link-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    padding: 6px 11px;
+    border-radius: 7px;
+    background: #f4f3ef;
+    border: 1px solid rgba(15, 23, 42, 0.08);
+    color: #18181b;
+    font-size: 12px;
+    font-weight: 600;
+    text-decoration: none;
+    transition: background-color 0.16s ease, color 0.16s ease, border-color 0.16s ease;
+}
+
+.game-link-btn:hover {
+    background: #18181b;
+    border-color: #18181b;
+    color: #ffffff;
+}
+
+/* Arcade Result Card Modal (clean porcelain) */
+.game-arcade-modal-backdrop {
+    position: absolute;
+    inset: 0;
+    z-index: 45;
+    background: rgba(15, 23, 42, 0.42);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+}
+
+.game-arcade-modal {
+    width: min(370px, 100%);
+    padding: 26px 24px;
+    border-radius: 16px;
+    background: #faf9f6;
+    border: 1px solid rgba(15, 23, 42, 0.1);
+    box-shadow: 0 20px 50px rgba(15, 23, 42, 0.16);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: 8px;
+}
+
+.arcade-rank-badge {
+    width: 56px;
+    height: 56px;
+    border-radius: 14px;
+    background: #18181b;
+    color: #ff7a30;
+    font-family: var(--font-header);
+    font-size: 30px;
+    font-weight: 800;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 4px;
+}
+
+.arcade-summary-grid {
+    width: 100%;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 8px;
+    margin: 8px 0;
+}
+
+.arcade-summary-cell {
+    padding: 10px 8px;
+    border-radius: 10px;
+    background: #ffffff;
+    border: 1px solid rgba(15, 23, 42, 0.07);
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+}
+
+.arcade-summary-cell span {
+    font-size: 11px;
+    color: #71717a;
+}
+
+.arcade-summary-cell strong {
+    font-family: var(--font-mono);
+    font-size: 16px;
+    color: #18181b;
+}
+
+.arcade-modal-actions {
+    display: flex;
+    gap: 8px;
+    margin-top: 6px;
+}
+
+.game-fallback {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 14px;
+    padding: 24px;
+    text-align: center;
+    background: #faf9f6;
+}
+
+/* Adaptive Midnight Obsidian Glass when user switches to Night lighting mood */
+.game-shell.is-night {
+    background: #131824;
+    color: #f4f4f5;
+}
+
+.game-shell.is-night .hud-surface {
+    background: rgba(15, 18, 28, 0.92);
+    border-color: rgba(255, 255, 255, 0.11);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.32);
+}
+
+.game-shell.is-night .hud-btn,
+.game-shell.is-night .hud-seg,
+.game-shell.is-night .game-zone-title,
+.game-shell.is-night .game-toast,
+.game-shell.is-night .arcade-timer,
+.game-shell.is-night .arcade-stat strong {
+    color: #f4f4f5;
+}
+
+.game-shell.is-night .game-room-chip,
+.game-shell.is-night .hud-loc,
+.game-shell.is-night .game-zone-sub,
+.game-shell.is-night .game-controls-hint,
+.game-shell.is-night .arcade-stat {
+    color: #a1a1aa;
+}
+
+.game-shell.is-night .game-room-chip:hover,
+.game-shell.is-night .hud-seg:hover {
+    color: #ffffff;
+    background: rgba(255, 255, 255, 0.08);
+}
+
+.game-shell.is-night .game-room-chip.active,
+.game-shell.is-night .hud-seg.is-active,
+.game-shell.is-night .game-zone-open-btn {
+    background: #ff7a30;
+    color: #ffffff;
+}
+
+.game-shell.is-night .hud-divider {
+    background: rgba(255, 255, 255, 0.12);
+}
+
+.game-shell.is-night .game-controls-hint kbd,
+.game-shell.is-night .game-zone-sec-btn {
+    background: rgba(255, 255, 255, 0.1);
+    border-color: rgba(255, 255, 255, 0.12);
+    color: #f4f4f5;
+}
+
+.game-shell.is-night .game-drawer,
+.game-shell.is-night .game-arcade-modal {
+    background: #10131c;
+    border-color: rgba(255, 255, 255, 0.09);
+    color: #f4f4f5;
+}
+
+.game-shell.is-night .game-drawer-head {
+    border-bottom-color: rgba(255, 255, 255, 0.08);
+}
+
+.game-shell.is-night .game-drawer-title,
+.game-shell.is-night .game-drawer-lead,
+.game-shell.is-night .game-card-title,
+.game-shell.is-night .arcade-summary-cell strong {
+    color: #ffffff;
+}
+
+.game-shell.is-night .game-drawer-text,
+.game-shell.is-night .arcade-summary-cell span,
+.game-shell.is-night .game-tab {
+    color: #a1a1aa;
+}
+
+.game-shell.is-night .game-card,
+.game-shell.is-night .arcade-summary-cell {
+    background: #171b27;
+    border-color: rgba(255, 255, 255, 0.08);
+}
+
+.game-shell.is-night .game-card-thumb {
+    background: #1f2535;
+}
+
+.game-shell.is-night .game-tabs {
+    background: rgba(255, 255, 255, 0.06);
+}
+
+.game-shell.is-night .game-tab.active {
+    background: #23293a;
+    color: #ffffff;
+}
+
+.game-shell.is-night .game-tag,
+.game-shell.is-night .game-link-btn,
+.game-shell.is-night .game-drawer-close {
+    background: rgba(255, 255, 255, 0.07);
+    border-color: rgba(255, 255, 255, 0.1);
+    color: #e4e4e7;
+}
+
+.game-shell.is-night .game-link-btn:hover,
+.game-shell.is-night .game-drawer-close:hover {
+    background: #ff7a30;
+    border-color: #ff7a30;
+    color: #ffffff;
+}
+
+.game-shell.is-night .game-joystick-base,
+.game-shell.is-night .game-touch-btn {
+    background: rgba(16, 19, 28, 0.78);
+    border-color: rgba(255, 255, 255, 0.14);
+    color: #ffffff;
+}
+
+.game-shell.is-night .game-joystick-knob,
+.game-shell.is-night .game-touch-btn.primary {
+    background: #ff7a30;
+    border-color: #ff7a30;
+}
+
+@media (max-width: 1320px) {
+    .hud-loc {
+        display: none;
+    }
+}
+
+@media (max-width: 900px), (pointer: coarse) {
+    .game-controls-hint,
+    .game-minimap,
+    .hud-loc {
+        display: none;
+    }
+
+    .game-touch-controls {
+        display: flex;
+    }
+
+    .game-zone-prompt {
+        bottom: 140px;
+        max-width: calc(100% - 28px);
+        padding: 7px 8px 7px 12px;
+    }
+
+    .game-zone-sub,
+    .game-zone-open-btn kbd,
+    .game-zone-sec-btn kbd {
+        display: none;
+    }
+}
+
+@media (max-width: 820px) {
+    .game-hud-top {
+        top: 12px;
+        left: 12px;
+        right: 12px;
+        flex-wrap: wrap;
+        gap: 8px;
+    }
+
+    .game-rooms-bar {
+        order: 3;
+        width: 100%;
+        justify-content: space-between;
+        overflow-x: auto;
+        scrollbar-width: none;
+    }
+
+    .game-rooms-bar::-webkit-scrollbar {
+        display: none;
+    }
+}
+
+/* Inline Video & Multi-Photo Gallery Preview inside 3D Drawer */
+.game-card-thumb-btn {
+    position: relative;
+    display: block;
+    width: 100%;
+    padding: 0;
+    border: 0;
+    background: transparent;
+    cursor: pointer;
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+.game-thumb-play {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 42px;
+    height: 42px;
+    border-radius: 50%;
+    background: rgba(15, 18, 28, 0.85);
+    color: #ffffff;
+    border: 1px solid rgba(255, 255, 255, 0.25);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    transition: transform 0.16s ease, background-color 0.16s ease;
+}
+
+.game-card-thumb-btn:hover .game-thumb-play {
+    transform: translate(-50%, -50%) scale(1.06);
+    background: #ff7a30;
+}
+
+.game-inline-video {
+    width: 100%;
+    aspect-ratio: 16 / 9;
+    border-radius: 10px;
+    overflow: hidden;
+    background: #09090b;
+    margin-bottom: 10px;
+}
+
+.game-inline-video.is-vertical {
+    aspect-ratio: 9 / 14;
+    max-height: 360px;
+}
+
+.game-inline-video iframe {
+    width: 100%;
+    height: 100%;
+    border: 0;
+}
+
+.game-gallery-strip {
+    display: flex;
+    gap: 6px;
+    margin: -4px 0 10px;
+    overflow-x: auto;
+}
+
+.game-gallery-thumb {
+    flex: none;
+    width: 52px;
+    height: 36px;
+    padding: 0;
+    border-radius: 6px;
+    overflow: hidden;
+    border: 1.5px solid transparent;
+    background: #141720;
+    opacity: 0.6;
+    cursor: pointer;
+}
+
+.game-gallery-thumb.is-active,
+.game-gallery-thumb:hover {
+    opacity: 1;
+    border-color: #ff7a30;
+}
+
+.game-gallery-thumb img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+}

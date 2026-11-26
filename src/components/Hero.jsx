@@ -5,7 +5,7 @@ import { useItems } from '../lib/useItems';
 
 const roles = ['Full-stack Developer', 'Video Editor'];
 
-export default function Hero() {
+export default function Hero({ onEnterGame }) {
     const { projects, status } = useItems();
     const [activeTarget, setActiveTarget] = useState('#projects');
     const [roleIndex, setRoleIndex] = useState(0);
@@ -121,6 +121,20 @@ export default function Hero() {
                     >
                         Hire me
                     </button>
+                    {onEnterGame && (
+                        <button
+                            type="button"
+                            className="toggle-btn toggle-btn-game"
+                            onClick={onEnterGame}
+                        >
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.9" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                                <path d="M5 10V4l4 3h6l4-3v6a7 7 0 0 1-14 0Z" />
+                                <circle cx="9.5" cy="12" r="0.8" fill="currentColor" />
+                                <circle cx="14.5" cy="12" r="0.8" fill="currentColor" />
+                            </svg>
+                            3D House
+                        </button>
+                    )}
                 </div>
             </div>
         </section>
